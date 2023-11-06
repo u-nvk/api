@@ -53,7 +53,7 @@ server.after()
 
     server.decorate('cdb', pg);
 
-    server.listen({ port: 3000 }, (err) => {
+    server.listen({ host: '0.0.0.0', port: 3000 }, (err) => {
       if (err) {
         server.log.error(err);
         process.exit(1);
