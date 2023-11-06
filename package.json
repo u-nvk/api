@@ -23,17 +23,22 @@
   "homepage": "https://github.com/u-nvk/api#readme",
   "dependencies": {
     "@fastify/auth": "^4.4.0",
+    "@fastify/cors": "^8.4.1",
+    "@fastify/env": "^4.3.0",
     "@fastify/postgres": "^5.2.2",
     "@fastify/request-context": "^5.0.0",
+    "dotenv": "^16.3.1",
     "fastify": "^4.24.3",
     "fluent-json-schema": "^4.2.0-beta.0",
     "jsonwebtoken": "^9.0.2",
     "knex": "^3.0.1",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^20.4.8",
+    "@types/uuid": "^9.0.6",
     "@typescript-eslint/eslint-plugin": "^5.48.0",
     "@typescript-eslint/parser": "^5.48.0",
     "eslint": "^8.31.0",
