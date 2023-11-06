@@ -15,6 +15,10 @@ const server = fastify({
 
 const schema = S.object()
   .prop('VK_API_DOMAIN', S.string()).required()
+  .prop('VK_API_EXCHANGE_METHOD', S.string()).required()
+  .prop('VK_SERVICE_TOKEN', S.string()).required()
+  .prop('ACCESS_SECRET', S.string()).required()
+  .prop('DB_CONN', S.string()).required()
 
 const options = {
   dotenv: {
@@ -30,26 +34,25 @@ const options = {
 server.register(cors, {
   origin: '*',
   hook: 'preHandler',
-})
-
-const pg: Knex = knex({
-  client: 'pg',
-  connection: {
-    connectionString: process.env.DB_CONN,
-  },
-  pool: { min: 0, max: 2 },
 });
 
+server.register(fastifyEnv, options);
 
-server.decorate('cdb', pg);
-
-server.register(fastifyEnv, options)
-
-server.register(identityController, { prefix: '/identity/api/v1' })
+server.register(identityController, { prefix: '/identity/api/v1' });
 
 server.after()
   .then(() => {
-    console.log(server.envConfig);
+    const pg: Knex = knex({
+      client: 'pg',
+      connection: {
+        connectionString: server.envConfig.DB_CONN,
+      },
+      pool: { min: 0, max: 2 },
+    });
+
+
+    server.decorate('cdb', pg);
+
     server.listen({ port: 3000 }, (err) => {
       if (err) {
         server.log.error(err);
