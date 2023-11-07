@@ -2,8 +2,9 @@ import {FastifyInstance} from "fastify";
 import {UsersTable} from "../db/users.table";
 import { v4 as uuidv4 } from 'uuid';
 import {JwtCreator} from "../../../libs/jwt";
+import {ProfilesTable} from "../../profile/db/profiles.table";
 
-export const exchangeVkTokenHandler = async (fastify: FastifyInstance, vkTokenToExchange: string, vkUuid: string): Promise<string> => {
+export const exchangeVkTokenHandler = async (fastify: FastifyInstance, vkTokenToExchange: string, vkUuid: string, firstname: string, lastname: string): Promise<string> => {
   const urlPath = `https://${fastify.envConfig.VK_API_DOMAIN}/${fastify.envConfig.VK_API_EXCHANGE_METHOD}`
   const body = {
     v: 5.131,
@@ -19,17 +20,45 @@ export const exchangeVkTokenHandler = async (fastify: FastifyInstance, vkTokenTo
     throw reqAsJson.error;
   }
 
-  const tableKnex = fastify.cdb.table<UsersTable>('users');
+  let userId: string | null = null;
 
-  const existedData: UsersTable | undefined = await tableKnex.where('vkId', reqAsJson.response.user_id).first();
-  const isExist = !!existedData;
+  try {
+    await fastify.cdb.transaction(async (trx) => {
+      const tableKnex = trx.table<UsersTable>('users');
+      const profilesTable = trx.table<ProfilesTable>('profiles');
 
-  const userId = existedData?.id ?? uuidv4();
+      const existedData: UsersTable | undefined = await tableKnex.where('vkId', reqAsJson.response.user_id).first();
+      const isExist = !!existedData;
 
-  if (isExist) {
-    await tableKnex.update({ vkAccessToken: reqAsJson.response.access_token }).where('vkId', reqAsJson.response.user_id);
-  } else {
-    await tableKnex.insert({ vkAccessToken: reqAsJson.response.access_token, vkId: reqAsJson.response.user_id, id: userId });
+      userId = existedData?.id ?? uuidv4();
+
+
+      if (isExist) {
+        await tableKnex.update({ vkAccessToken: reqAsJson.response.access_token }).where('vkId', reqAsJson.response.user_id);
+      } else {
+        const userInsert: UsersTable = {
+          vkAccessToken: reqAsJson.response.access_token,
+          vkId: reqAsJson.response.user_id,
+          id: userId,
+        }
+        await tableKnex.insert(userInsert);
+
+        const profileInsert: ProfilesTable = {
+          id: uuidv4(),
+          userId: userId,
+          surname: lastname,
+          firstname: firstname,
+        }
+        await profilesTable.insert(profileInsert);
+      }
+    })
+  } catch (e) {
+    fastify.log.error(e);
+    throw new Error('Error with db, exchange vk token')
+  }
+
+  if (!userId) {
+    throw new Error('userId does not filled');
   }
 
   const jwt = new JwtCreator({ vkId: reqAsJson.response.user_id, sub: userId }, fastify.envConfig.ACCESS_SECRET).withExpiresIn('90d');

@@ -10,7 +10,7 @@ export const identityController: FastifyPluginAsync = async (server: FastifyInst
     }
   }, async (request: FastifyRequest<{ Body: PostExchangeVkTokenRequestDto }>, reply) => {
     try {
-      const accessToken = await exchangeVkTokenHandler(server, request.body.vkToken, request.body.vkUuid)
+      const accessToken = await exchangeVkTokenHandler(server, request.body.vkToken, request.body.vkUuid, request.body.firstname, request.body.lastname);
       reply.status(200).send({ accessToken });
     } catch (e) {
       request.log.error(e);
