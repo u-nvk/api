@@ -6,6 +6,7 @@ export const identityController: FastifyPluginAsync = async (server: FastifyInst
   server.post('/exchange-vk-token', {
     schema: {
       body: PostExchangeVkTokenRequestDtoSchema,
+      tags: ['Identity']
     }
   }, async (request: FastifyRequest<{ Body: PostExchangeVkTokenRequestDto }>, reply) => {
     try {
