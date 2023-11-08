@@ -19,6 +19,7 @@ const schema = S.object()
   .prop('VK_SERVICE_TOKEN', S.string()).required()
   .prop('ACCESS_SECRET', S.string()).required()
   .prop('DB_CONN', S.string()).required()
+  .prop('VK_API_GET_PROFILE_INFO_METHOD', S.string()).required()
 
 const options = {
   dotenv: {

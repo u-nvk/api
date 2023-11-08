@@ -5,7 +5,7 @@ export class JwtCreator {
   private expiresIn: string = '15m';
 
   constructor(
-    private readonly payloadData: Record<string, string>,
+    private readonly payloadData: Record<string, string | number>,
     private readonly secret: string,
   ) {
   }

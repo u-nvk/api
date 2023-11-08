@@ -1,0 +1,7 @@
+POST http://localhost:3000/identity/api/v1/exchange-vk-access-token
+Content-Type: application/json
+
+{
+  "vkAccessToken": "vk1.a.wwM0ZPlOsKEELUic8LTG_H7byi6PqgQFiW2a-FAjDUttbDjPohU2Sr8jmr_pjzzNk8wsKKMSdfHzXJyfG-jB6JUqfXa8fgY2yLTxiw8oJqq2AvfarZ2hSJKHb3tdVNCWj260x_tkZxwQrjCuXhRj7-NT-Hxe1xdZrcx3p28rwahFRy_4tsw2tE4qVFbMULINHl3biqUUhSbKR9xKe5vxnw",
+  "vkId": 781398873
+}
