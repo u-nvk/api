@@ -20,6 +20,8 @@ const schema = S.object()
   .prop('ACCESS_SECRET', S.string()).required()
   .prop('DB_CONN', S.string()).required()
   .prop('VK_API_GET_PROFILE_INFO_METHOD', S.string()).required()
+  .prop('HOST', S.string()).required()
+  .prop('PORT', S.number()).required()
 
 const options = {
   dotenv: {
@@ -27,8 +29,6 @@ const options = {
   },
   schema: schema.valueOf(),
   confKey: 'envConfig',
-  // data: process.env,
-  // expandEnv: true,
 }
 
 // TODO: исправить
@@ -86,7 +86,7 @@ server.after()
 
     server.decorate('cdb', pg);
 
-    server.listen({ host: '127.0.0.1', port: 3000 }, (err) => {
+    server.listen({ host: server.envConfig.HOST, port: server.envConfig.PORT }, (err) => {
       if (err) {
         server.log.error(err);
         process.exit(1);

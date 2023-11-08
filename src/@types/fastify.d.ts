@@ -10,6 +10,8 @@ declare module 'fastify' {
       VK_SERVICE_TOKEN: string;
       ACCESS_SECRET: string;
       DB_CONN: string;
+      HOST: string;
+      PORT: number;
     }
   }
 }
