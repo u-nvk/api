@@ -8,8 +8,8 @@
     "dev:watch": "nodemon",
     "build": "tsc",
     "start": "node dist/main.js",
-    "migrate-latest": "knex migrate:latest --cwd ./src",
-    "migrate-rollback": "knex migrate:rollback --cwd ./src"
+    "migrate-latest": "env $(cat .env) knex migrate:latest --cwd ./src",
+    "migrate-rollback": "env $(cat .env) knex migrate:rollback --cwd ./src"
   },
   "repository": {
     "type": "git",

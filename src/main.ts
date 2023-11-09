@@ -1,17 +1,24 @@
 /// <reference types="./@types/fastify.d.ts" />
-import { fastify } from "fastify";
+import {fastify, FastifyReply, FastifyRequest} from "fastify";
 import { fastifyEnv } from "@fastify/env";
 import { identityController } from './services/identity/controller';
 import {Knex, knex} from "knex";
 import 'dotenv/config';
 import cors from '@fastify/cors'
 import { S } from 'fluent-json-schema';
-import x from "@fastify/swagger";
-import y from '@fastify/swagger-ui';
+import swagger from "@fastify/swagger";
+import swaggerUi from '@fastify/swagger-ui';
+import fastifyAuth from '@fastify/auth';
+import {JwtVerifier} from "./libs/jwt";
+import fastifyRequestContext from '@fastify/request-context';
+import {profileController} from "./services/profile";
+import {DecodedJwtToken} from "./libs/common";
 
 const server = fastify({
   logger: true,
-})
+});
+
+server.register(fastifyRequestContext);
 
 const schema = S.object()
   .prop('VK_API_DOMAIN', S.string()).required()
@@ -39,7 +46,7 @@ server.register(cors, {
 
 server.register(fastifyEnv, options);
 
-server.register(x, {
+server.register(swagger, {
   swagger: {
     info: {
       title: 'UNVK-Api',
@@ -55,7 +62,7 @@ server.register(x, {
   }
 })
 
-server.register(y, {
+server.register(swaggerUi, {
   routePrefix: '/documentation',
   uiConfig: {
     docExpansion: 'full',
@@ -69,9 +76,42 @@ server.register(y, {
   transformStaticCSP: (header) => header,
   transformSpecification: (swaggerObject, request, reply) => { return swaggerObject },
   transformSpecificationClone: true
-})
+});
+
+server
+  .decorate('verifyJwtIdentity', (req: FastifyRequest, rep: FastifyReply, done: any) => {
+    try {
+      const jwt: string | undefined = req.headers.authorization;
+
+      if (!jwt) {
+        rep.status(401);
+        done(new Error('Not authorization header'));
+        return;
+      }
+
+      try {
+        const v = new JwtVerifier<DecodedJwtToken>(jwt, req.server.envConfig.ACCESS_SECRET);
+        v.isValid()
+          .then((decoded: DecodedJwtToken) => {
+            req.requestContext.set('decodedJwt', decoded);
+            done();
+          })
+          .catch((e) => {
+            done(new Error('Invalid token'));
+          })
+      } catch (e) {
+        return new Error('Invalid token');
+      }
+    } catch (e) {
+      return new Error('Internal error');
+    }
+  })
+
+
+server.register(fastifyAuth);
 
 server.register(identityController, { prefix: '/identity/api/v1' });
+server.register(profileController, { prefix: '/profile/api/v1' });
 
 server.after()
   .then(() => {

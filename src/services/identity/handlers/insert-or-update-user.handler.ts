@@ -4,6 +4,7 @@ import {TableName} from "../../../libs/tables";
 import {ProfilesTable} from "../../profile/db/profiles.table";
 import {v4 as uuidv4} from "uuid";
 import {JwtCreator} from "../../../libs/jwt";
+import {DecodedJwtToken} from "../../../libs/common";
 
 /**
  * Вставка/обновление данных пользователя в таблице пользователей и профилей
@@ -57,6 +58,6 @@ export const insertOrUpdateUsersAndProfiles = async (fastify: FastifyInstance, v
     throw new Error('userId does not filled');
   }
 
-  const jwt = new JwtCreator({ vkId: vkId, sub: userId }, fastify.envConfig.ACCESS_SECRET).withExpiresIn('90d');
+  const jwt = new JwtCreator<DecodedJwtToken>({ vkId: vkId, sub: userId }, fastify.envConfig.ACCESS_SECRET).withExpiresIn('90d');
   return await jwt.create()
 }

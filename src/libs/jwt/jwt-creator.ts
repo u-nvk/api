@@ -1,11 +1,11 @@
 import * as jwt from 'jsonwebtoken';
 import {FailedJwtGenerationError} from "./failed-jwt-generation.error";
 
-export class JwtCreator {
+export class JwtCreator<T extends Object> {
   private expiresIn: string = '15m';
 
   constructor(
-    private readonly payloadData: Record<string, string | number>,
+    private readonly payloadData: T,
     private readonly secret: string,
   ) {
   }
@@ -26,7 +26,7 @@ export class JwtCreator {
     });
   }
 
-  public withExpiresIn(expireIn: string): JwtCreator {
+  public withExpiresIn(expireIn: string): JwtCreator<T> {
     this.expiresIn = expireIn;
 
     return this;

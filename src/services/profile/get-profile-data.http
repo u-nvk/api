@@ -1,0 +1,3 @@
+GET http://localhost:3000/profile/api/v1/data
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2a0lkIjo3ODEzOTg4NzMsInN1YiI6ImIwY2IxOTkyLWVkNDMtNDU3ZC04MGJhLWNkOWI5NWMxOTdjZSIsImlhdCI6MTY5OTU0ODM2OCwiZXhwIjoxNzA3MzI0MzY4fQ.34xcrut7Jn4n7qKi1J88AFdB4OeC6b-vKwRUrAW_5zU

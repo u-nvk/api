@@ -1,7 +1,9 @@
 import type { Knex } from 'knex';
 import 'dotenv/config';
 
-// Update with your config settings.
+if (!process.env.DB_CONN) {
+  throw new Error('Passed invalid db conn env var');
+}
 
 const config: { [key: string]: Knex.Config } = {
   development: {
@@ -12,5 +14,4 @@ const config: { [key: string]: Knex.Config } = {
   },
 };
 
-// module.exports = config;
 export default config;

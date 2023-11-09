@@ -1,8 +1,10 @@
 import { Knex } from 'knex';
+import { DecodedJwtToken } from "../libs/common";
 
 declare module 'fastify' {
   export interface FastifyInstance {
     cdb: Knex;
+    verifyJwtIdentity: any;
     envConfig: {
       VK_API_DOMAIN: string;
       VK_API_EXCHANGE_METHOD: string;
@@ -16,8 +18,8 @@ declare module 'fastify' {
   }
 }
 
-// declare module '@fastify/request-context' {
-//   interface RequestContextData {
-//     decodedJwt: any
-//   }
-// }
+declare module '@fastify/request-context' {
+  interface RequestContextData {
+    decodedJwt: DecodedJwtToken;
+  }
+}
