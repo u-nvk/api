@@ -1,10 +1,10 @@
 import * as jwt from 'jsonwebtoken';
-import {FailedJwtGenerationError} from "./failed-jwt-generation.error";
+import { FailedJwtGenerationError } from './failed-jwt-generation.error';
 
 export class JwtCreator<T extends Object> {
   private expiresIn: string = '15m';
 
-  constructor(
+  public constructor(
     private readonly payloadData: T,
     private readonly secret: string,
   ) {

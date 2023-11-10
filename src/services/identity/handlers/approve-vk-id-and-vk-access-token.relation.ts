@@ -1,5 +1,5 @@
-import {FastifyInstance} from "fastify";
-import {sendFormUrlencoded} from "../../../libs/http";
+import { FastifyInstance } from 'fastify';
+import { sendFormUrlencoded } from '../../../libs/http';
 
 export type SuccessRelationApprove = {
   isApproved: true;
@@ -26,14 +26,12 @@ export const approveVkIdAndVkAccessTokenRelation = async (fastify: FastifyInstan
   const dataBody = {
     access_token: vkAccessToken,
     v: 5.154,
-  }
+  };
 
   type Error = { error: { error_msg: string } };
   type Success = { response: { id: number, first_name: string, last_name: string } };
 
-
   const json = await sendFormUrlencoded<Error | Success>(url, dataBody);
-
 
   if ('error' in json) {
     fastify.log.error(json);
@@ -45,4 +43,4 @@ export const approveVkIdAndVkAccessTokenRelation = async (fastify: FastifyInstan
   }
 
   return { isApproved: false };
-}
+};

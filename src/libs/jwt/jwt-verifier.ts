@@ -1,9 +1,9 @@
 import * as jwt from 'jsonwebtoken';
 import { JwtPayload, VerifyErrors } from 'jsonwebtoken';
-import {FailedVerifyTokenError} from "./failed-jwt-verify.error";
+import { FailedVerifyTokenError } from './failed-jwt-verify.error';
 
 export class JwtVerifier<DecodedToken extends {}> {
-  constructor(
+  public constructor(
     private readonly token: string,
     private readonly secret: string,
   ) {
@@ -17,7 +17,7 @@ export class JwtVerifier<DecodedToken extends {}> {
         }
 
         resolve(decoded as DecodedToken);
-      })
-    })
+      });
+    });
   }
 }

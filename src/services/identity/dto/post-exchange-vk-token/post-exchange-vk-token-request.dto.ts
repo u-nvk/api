@@ -19,6 +19,11 @@ export interface PostExchangeVkTokenRequestDto {
 
 export const PostExchangeVkTokenRequestDtoSchema = S.object()
   .prop('vkToken', S.string()).required()
-  .prop('vkUuid', S.string()).required()
-  .prop('firstname', S.string()).description('Имя').required()
-  .prop('lastname', S.string()).description('Фамилия').required()
+  .prop('vkUuid', S.string())
+  .required()
+  .prop('firstname', S.string())
+  .description('Имя')
+  .required()
+  .prop('lastname', S.string())
+  .description('Фамилия')
+  .required();

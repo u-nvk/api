@@ -1,8 +1,9 @@
-import {FastifyInstance} from "fastify";
-import {TableName} from "../../../libs/tables";
-import {PaymentMethodsTable} from "../db";
-import {randomUUID} from "crypto";
+import { FastifyInstance } from 'fastify';
+import { randomUUID } from 'crypto';
+import { TableName } from '../../../libs/tables';
+import { PaymentMethodsTable } from '../db';
 
+// eslint-disable-next-line no-shadow
 export enum BankNumber {
   sberbank = 0,
   tinkoff,
@@ -10,15 +11,15 @@ export enum BankNumber {
   vtb,
 }
 
-export const setDriverDataHandler = async (fastiy: FastifyInstance, userId: string, phone: string, bank: BankNumber) => {
+export const setDriverDataHandler = async (fastiy: FastifyInstance, userId: string, phone: string, bank: BankNumber): Promise<boolean> => {
   const paymentTable = fastiy.cdb.table<PaymentMethodsTable>(TableName.paymentMethods);
 
   const objToInsert: PaymentMethodsTable = {
     id: randomUUID(),
     ownerId: userId,
-    phone: phone,
-    bank: bank,
-  }
+    phone,
+    bank,
+  };
 
   try {
     await paymentTable.insert(objToInsert);
@@ -26,4 +27,4 @@ export const setDriverDataHandler = async (fastiy: FastifyInstance, userId: stri
   } catch (e) {
     throw new Error('Error while insert data, setDriverData', { cause: e });
   }
-}
+};

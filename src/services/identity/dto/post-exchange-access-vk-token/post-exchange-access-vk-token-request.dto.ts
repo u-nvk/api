@@ -7,4 +7,6 @@ export interface PostExchangeAccessVkTokenRequestDto {
 
 export const PostExchangeAccessVkTokenRequestDtoSchema = S.object()
   .prop('vkAccessToken', S.string()).description('Аксес токен из ВК').required()
-  .prop('vkId', S.number()).description('Айди пользователя в ВК').required()
+  .prop('vkId', S.number())
+  .description('Айди пользователя в ВК')
+  .required();

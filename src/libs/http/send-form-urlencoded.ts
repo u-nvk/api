@@ -11,7 +11,7 @@ export const sendFormUrlencoded = async <Response>(url: string, dataObj: Record<
   Object.entries(dataObj).forEach(([key, value]) => {
     const encKey = encodeURIComponent(key);
     const encBody = encodeURIComponent(value);
-    formBody.push(encKey + '=' + encBody);
+    formBody.push(`${encKey}=${encBody}`);
   });
 
   const body = formBody.join('&');
@@ -35,4 +35,4 @@ export const sendFormUrlencoded = async <Response>(url: string, dataObj: Record<
   } catch (e) {
     throw new Error('Error when try parse response as json. sendFormUrlencoded', { cause: e });
   }
-}
+};

@@ -1,19 +1,18 @@
-import {FastifyInstance, FastifyPluginAsync, FastifyRequest} from "fastify";
+import { FastifyInstance, FastifyPluginAsync, FastifyRequest } from 'fastify';
 import {
   PostDataHeadersSchema,
   PostProfileDataRequestDto,
   PostDataRequestDtoSchema,
   GetProfileDataResponseDtoSchema,
-} from "./dto";
-import {setDriverDataHandler, getProfileDataHandler} from "./handlers";
+} from './dto';
+import { setDriverDataHandler, getProfileDataHandler } from './handlers';
 
 export const profileController: FastifyPluginAsync = async (server: FastifyInstance) => {
-
   server.get('/data', {
     schema: {
       tags: ['Profile'],
       response: {
-        200: GetProfileDataResponseDtoSchema
+        200: GetProfileDataResponseDtoSchema,
       },
       headers: PostDataHeadersSchema,
     },
@@ -29,7 +28,9 @@ export const profileController: FastifyPluginAsync = async (server: FastifyInsta
     reply.status(200).send(data);
   });
 
-  server.post<{ Body: PostProfileDataRequestDto }>('/data', {
+  server.post<{ Body: PostProfileDataRequestDto }>(
+    '/data',
+    {
       schema: {
         body: PostDataRequestDtoSchema,
         tags: ['Profile'],
@@ -45,8 +46,7 @@ export const profileController: FastifyPluginAsync = async (server: FastifyInsta
 
       const paymentMethod = request.body.paymentMethods[0];
       await setDriverDataHandler(server, userId.sub, paymentMethod.phone, paymentMethod.bank);
-      reply.status(200)
-    }
-  )
-
-}
+      reply.status(200);
+    },
+  );
+};

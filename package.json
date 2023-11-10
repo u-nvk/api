@@ -9,7 +9,8 @@
     "build": "tsc",
     "start": "node dist/main.js",
     "migrate-latest": "env $(cat .env) knex migrate:latest --cwd ./src",
-    "migrate-rollback": "env $(cat .env) knex migrate:rollback --cwd ./src"
+    "migrate-rollback": "env $(cat .env) knex migrate:rollback --cwd ./src",
+    "eslint:fix": "npx eslint --fix --ext .ts ."
   },
   "repository": {
     "type": "git",
