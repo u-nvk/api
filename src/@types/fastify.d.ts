@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { DecodedJwtToken } from '../libs/common';
+import { DecodedJwtToken } from '@libs/common';
 
 declare module 'fastify' {
   export interface FastifyInstance {

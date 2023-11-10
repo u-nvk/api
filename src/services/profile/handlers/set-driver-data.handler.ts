@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { randomUUID } from 'crypto';
-import { TableName } from '../../../libs/tables';
+import { TableName } from '@libs/tables';
 import { PaymentMethodsTable } from '../db';
 
 // eslint-disable-next-line no-shadow

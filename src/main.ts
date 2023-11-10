@@ -9,10 +9,10 @@ import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 import fastifyAuth from '@fastify/auth';
 import fastifyRequestContext from '@fastify/request-context';
-import { JwtVerifier } from './libs/jwt';
+import { JwtVerifier } from '@libs/jwt';
+import { DecodedJwtToken } from '@libs/common';
 import { identityController } from './services/identity/controller';
 import { profileController } from './services/profile';
-import { DecodedJwtToken } from './libs/common';
 
 const server = fastify({
   logger: true,
