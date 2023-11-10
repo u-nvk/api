@@ -2,9 +2,9 @@ import {FastifyInstance} from "fastify";
 import {UsersTable} from "../db/users.table";
 import {TableName} from "../../../libs/tables";
 import {ProfilesTable} from "../../profile/db/profiles.table";
-import {v4 as uuidv4} from "uuid";
 import {JwtCreator} from "../../../libs/jwt";
 import {DecodedJwtToken} from "../../../libs/common";
+import {randomUUID} from "crypto";
 
 /**
  * Вставка/обновление данных пользователя в таблице пользователей и профилей
@@ -27,7 +27,7 @@ export const insertOrUpdateUsersAndProfiles = async (fastify: FastifyInstance, v
       const existedData: UsersTable | undefined = await tableKnex.where('vkId', vkId).first();
       const isExist = !!existedData;
 
-      userId = existedData?.id ?? uuidv4();
+      userId = existedData?.id ?? randomUUID();
 
 
       if (isExist) {
@@ -41,7 +41,7 @@ export const insertOrUpdateUsersAndProfiles = async (fastify: FastifyInstance, v
         await tableKnex.insert(userInsert);
 
         const profileInsert: ProfilesTable = {
-          id: uuidv4(),
+          id: randomUUID(),
           userId: userId,
           surname: lastname,
           firstname: firstname,
