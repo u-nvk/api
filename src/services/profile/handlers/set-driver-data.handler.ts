@@ -1,7 +1,6 @@
-import {knex} from "knex";
 import {FastifyInstance} from "fastify";
 import {TableName} from "../../../libs/tables";
-import {PaymentMethodsTable} from "../db/payment-methods.table";
+import {PaymentMethodsTable} from "../db";
 import {randomUUID} from "crypto";
 
 export enum BankNumber {

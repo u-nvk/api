@@ -1,5 +1,5 @@
 import {FastifyInstance} from "fastify";
-import {sendFormUrlencoded} from "../../../libs/http/send-form-urlencoded";
+import {sendFormUrlencoded} from "../../../libs/http";
 
 export type SuccessRelationApprove = {
   isApproved: true;

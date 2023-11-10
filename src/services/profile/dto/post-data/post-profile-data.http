@@ -1,3 +1,12 @@
-GET http://localhost:3000/profile/api/v1/data
+POST http://localhost:3000/profile/api/v1/data
 Content-Type: application/json
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2a0lkIjo3ODEzOTg4NzMsInN1YiI6ImYzMjk0N2JkLTJkOWEtNGE3ZS05Yjk0LWI1OWQ2ZGNhY2FkMCIsImlhdCI6MTY5OTYyODM0OSwiZXhwIjoxNzA3NDA0MzQ5fQ.qcdEgrRoRCUjxH7Su69TpK0vFQOeZFiVuzOwka8RWrQ
+
+{
+    "paymentMethods": [
+        {
+            "phone": "79122602002",
+            "bank": 0
+        }
+    ]
+}

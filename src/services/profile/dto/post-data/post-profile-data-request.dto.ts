@@ -1,6 +1,6 @@
 import { S } from 'fluent-json-schema';
 
-export interface PostDataRequestDto {
+export interface PostProfileDataRequestDto {
   paymentMethods: { phone: string, bank: number }[];
 }
 
@@ -13,3 +13,7 @@ export const PostDataRequestDtoSchema = S.object()
           .prop('bank', S.number()).required()
       ).required()
   )
+
+export const PostDataHeadersSchema = S.object()
+  .prop('Content-Type', S.const('application/json')).required()
+  .prop('Authorization', S.string()).required()
