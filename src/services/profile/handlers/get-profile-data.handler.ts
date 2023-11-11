@@ -6,6 +6,7 @@ export interface GetProfileDataHandlerReturn {
   userId: string;
   surname: string;
   firstname: string;
+  isDriver: boolean;
   payments: {
     phone: string;
     bank: number;
@@ -31,6 +32,7 @@ export const getProfileDataHandler = async (fastiy: FastifyInstance, userId: str
     userId: profile.userId,
     firstname: profile.firstname,
     surname: profile.surname,
+    isDriver: profile.isDriver,
     payments: payments.map((item) => ({ phone: item.phone, bank: item.bank })),
   };
 };

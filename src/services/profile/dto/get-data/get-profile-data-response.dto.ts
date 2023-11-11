@@ -4,6 +4,7 @@ export interface GetProfileDataResponseDto {
   userId: string;
   surname: string;
   firstname: string;
+  isDriver: boolean;
   payments: {
     phone: string;
     bank: number;
@@ -16,6 +17,8 @@ export const GetProfileDataResponseDtoSchema = S.object()
   .prop('surname', S.string().description('Фамилия пользователя'))
   .required()
   .prop('firstname', S.string().description('Имя пользователя'))
+  .required()
+  .prop('isDriver', S.boolean().description('Является ли пользователь водителем'))
   .required()
   .prop(
     'payments',

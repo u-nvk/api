@@ -1,12 +1,13 @@
 POST http://localhost:3000/profile/api/v1/data
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2a0lkIjo3ODEzOTg4NzMsInN1YiI6ImYzMjk0N2JkLTJkOWEtNGE3ZS05Yjk0LWI1OWQ2ZGNhY2FkMCIsImlhdCI6MTY5OTYyODM0OSwiZXhwIjoxNzA3NDA0MzQ5fQ.qcdEgrRoRCUjxH7Su69TpK0vFQOeZFiVuzOwka8RWrQ
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2a0lkIjo3ODEzOTg4NzMsInN1YiI6IjdkNDI4OGY0LTNlYmYtNDI4Ny05NzEwLWM3MjcxMzhhZDBiNyIsImlhdCI6MTY5OTcwMzI0MywiZXhwIjoxNzA3NDc5MjQzfQ.8L9Q4uTRbUOheSZljUlAYiE7w6nmLmbDD-1rxwkz8bY
 
 {
+    "isDriver": true,
     "paymentMethods": [
         {
             "phone": "79122602002",
-            "bank": 0
+            "bank": 1
         }
     ]
 }
