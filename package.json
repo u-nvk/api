@@ -6,8 +6,8 @@
   "private": true,
   "scripts": {
     "dev:watch": "nodemon",
-    "build": "tsc",
-    "start": "node dist/main.js",
+    "build": "tsc --project tsconfig.json",
+    "start": "node -r ./tsconfig-paths-bootstrap.js dist/main.js",
     "migrate-latest": "env $(cat .env) knex migrate:latest --cwd ./src",
     "migrate-rollback": "env $(cat .env) knex migrate:rollback --cwd ./src",
     "eslint:fix": "npx eslint --fix --ext .ts ."
@@ -35,7 +35,8 @@
     "fluent-json-schema": "^4.2.0-beta.0",
     "jsonwebtoken": "^9.0.2",
     "knex": "^3.0.1",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "tsconfig-paths": "^4.2.0"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.2",
