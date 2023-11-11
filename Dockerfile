@@ -9,6 +9,7 @@ RUN npm install -g knex
 RUN npm i
 
 COPY ./src ./src
+COPY ./tsconfig-paths-bootstrap.js ./tsconfig-paths-bootstrap.js
 COPY ./tsconfig.json ./tsconfig.json
 
 RUN npm run build
