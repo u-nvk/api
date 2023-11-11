@@ -5,4 +5,5 @@ export interface ProfilesTable {
   userId: string;
   surname: string;
   firstname: string;
+  isDriver: boolean;
 }

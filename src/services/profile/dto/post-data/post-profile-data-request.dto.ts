@@ -1,7 +1,8 @@
 import { S } from 'fluent-json-schema';
 
 export interface PostProfileDataRequestDto {
-  paymentMethods: { phone: string, bank: number }[];
+  paymentMethods?: { phone: string, bank: number }[];
+  isDriver?: boolean;
 }
 
 export const PostDataRequestDtoSchema = S.object()
@@ -14,10 +15,9 @@ export const PostDataRequestDtoSchema = S.object()
             .description('Номер телефона в формате 70000000000')).required()
           .prop('bank', S.number())
           .required(),
-      ).required(),
+      ),
+  )
+  .prop(
+    'isDriver',
+    S.boolean(),
   );
-
-export const PostDataHeadersSchema = S.object()
-  .prop('Content-Type', S.const('application/json')).required()
-  .prop('Authorization', S.string())
-  .required();

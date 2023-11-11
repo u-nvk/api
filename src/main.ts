@@ -14,6 +14,9 @@ import { DecodedJwtToken } from '@libs/common';
 import { identityController } from './services/identity/controller';
 import { profileController } from './services/profile';
 
+// @ts-ignore
+import { version } from '../package.json';
+
 const server = fastify({
   logger: true,
 });
@@ -58,7 +61,7 @@ server.register(swagger, {
     info: {
       title: 'UNVK-Api',
       description: 'Documentation for unvk api',
-      version: '0.0.0',
+      version: version ?? '',
     },
     externalDocs: {
       url: 'https://swagger.io',
@@ -72,16 +75,9 @@ server.register(swagger, {
 server.register(swaggerUi, {
   routePrefix: '/documentation',
   uiConfig: {
-    docExpansion: 'full',
-    deepLinking: false,
-  },
-  uiHooks: {
-    onRequest(request, reply, next) { next(); },
-    preHandler(request, reply, next) { next(); },
+    deepLinking: true,
   },
   staticCSP: true,
-  transformStaticCSP: (header) => header,
-  transformSpecification: (swaggerObject, request, reply) => swaggerObject,
   transformSpecificationClone: true,
 });
 

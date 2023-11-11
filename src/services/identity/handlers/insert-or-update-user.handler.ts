@@ -44,6 +44,7 @@ export const insertOrUpdateUsersAndProfiles = async (fastify: FastifyInstance, v
           userId,
           surname: lastname,
           firstname,
+          isDriver: false,
         };
         await profilesTable.insert(profileInsert);
       }

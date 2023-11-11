@@ -6,6 +6,7 @@ export async function up(knex: Knex): Promise<void> {
     tableBuilder.uuid('userId').references('id').inTable('users').notNullable();
     tableBuilder.string('surname').notNullable();
     tableBuilder.string('firstname').notNullable();
+    tableBuilder.boolean('isDriver').notNullable().defaultTo(false);
 
     tableBuilder.unique(['userId']);
   });
