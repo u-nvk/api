@@ -3,7 +3,6 @@ import { randomUUID } from 'crypto';
 import { TableName } from '@libs/tables';
 import { PaymentMethodsTable } from '../db';
 
-// eslint-disable-next-line no-shadow
 export enum BankNumber {
   sberbank = 0,
   tinkoff,
