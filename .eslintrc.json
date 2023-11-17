@@ -37,6 +37,7 @@
     "import/no-extraneous-dependencies": "off",
     "no-shadow": "off",
     "@typescript-eslint/no-shadow": "warn",
-    "consistent-return": "off"
+    "consistent-return": "off",
+    "no-useless-escape": "off"
   }
 }

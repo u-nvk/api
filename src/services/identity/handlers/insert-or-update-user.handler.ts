@@ -1,10 +1,10 @@
 import { FastifyInstance } from 'fastify';
 import { randomUUID } from 'crypto';
-import { UsersTable } from '../db/users.table';
-import { TableName } from '../../../libs/tables';
+import { TableName } from '@libs/tables';
+import { JwtCreator } from '@libs/jwt';
+import { DecodedJwtToken } from '@libs/common';
 import { ProfilesTable } from '../../profile/db';
-import { JwtCreator } from '../../../libs/jwt';
-import { DecodedJwtToken } from '../../../libs/common';
+import { UsersTable } from '../db/users.table';
 
 /**
  * Вставка/обновление данных пользователя в таблице пользователей и профилей
@@ -19,28 +19,38 @@ import { DecodedJwtToken } from '../../../libs/common';
  */
 export const insertOrUpdateUsersAndProfiles = async (fastify: FastifyInstance, vkId: number, vkAccessToken: string, firstname: string, lastname: string): Promise<string> => {
   let userId: string | undefined;
+  let profileId: string | undefined;
   try {
     await fastify.cdb.transaction(async (trx) => {
-      const tableKnex = trx.table<UsersTable>(TableName.users);
+      const usersTable = trx.table<UsersTable>(TableName.users);
       const profilesTable = trx.table<ProfilesTable>(TableName.profiles);
 
-      const existedData: UsersTable | undefined = await tableKnex.where('vkId', vkId).first();
+      const existedData: UsersTable | undefined = await usersTable.where('vkId', vkId).first();
       const isExist = !!existedData;
 
       userId = existedData?.id ?? randomUUID();
 
       if (isExist) {
-        await tableKnex.update({ vkAccessToken }).where('vkId', vkId);
+        await usersTable.update({ vkAccessToken }).where('vkId', vkId);
+        const profileData: ProfilesTable | undefined = await profilesTable.where('userId', userId).first();
+        if (!profileData) {
+          fastify.log.error('Пользователь уже зарегистрирован, но не имеет профиля');
+          throw new Error('Not found profile');
+        } else {
+          profileId = profileData.id;
+        }
       } else {
         const userInsert: UsersTable = {
           vkAccessToken,
           vkId,
           id: userId,
         };
-        await tableKnex.insert(userInsert);
+        await usersTable.insert(userInsert);
+
+        profileId = randomUUID();
 
         const profileInsert: ProfilesTable = {
-          id: randomUUID(),
+          id: profileId,
           userId,
           surname: lastname,
           firstname,
@@ -58,6 +68,10 @@ export const insertOrUpdateUsersAndProfiles = async (fastify: FastifyInstance, v
     throw new Error('userId does not filled');
   }
 
-  const jwt = new JwtCreator<DecodedJwtToken>({ vkId, sub: userId }, fastify.envConfig.ACCESS_SECRET).withExpiresIn('90d');
+  if (!profileId) {
+    throw new Error('profileId does not filled');
+  }
+
+  const jwt = new JwtCreator<DecodedJwtToken>({ vkId, sub: userId, pId: profileId }, fastify.envConfig.ACCESS_SECRET).withExpiresIn('90d');
   return jwt.create();
 };

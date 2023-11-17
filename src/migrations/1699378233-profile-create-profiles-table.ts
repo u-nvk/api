@@ -1,7 +1,8 @@
 import { Knex } from 'knex';
+import { TableName } from '@libs/tables';
 
 export async function up(knex: Knex): Promise<void> {
-  await knex.schema.createTable('profiles', (tableBuilder) => {
+  await knex.schema.createTable(TableName.profiles, (tableBuilder) => {
     tableBuilder.uuid('id', { primaryKey: true });
     tableBuilder.uuid('userId').references('id').inTable('users').notNullable();
     tableBuilder.string('surname').notNullable();
@@ -13,5 +14,5 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-  await knex.schema.dropTable('profiles');
+  await knex.schema.dropTable(TableName.profiles);
 }

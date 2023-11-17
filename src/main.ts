@@ -13,9 +13,13 @@ import { JwtVerifier } from '@libs/jwt';
 import { DecodedJwtToken } from '@libs/common';
 import { identityController } from './services/identity/controller';
 import { profileController } from './services/profile';
-
 // @ts-ignore
 import { version } from '../package.json';
+import { orderController } from './services/order';
+
+if (!fetch) {
+  throw new Error('fetch does not exist. maybe you use wrong node (require 18 and higher)');
+}
 
 const server = fastify({
   logger: true,
@@ -99,7 +103,7 @@ server
             req.requestContext.set('decodedJwt', decoded);
             done();
           })
-          .catch((e) => {
+          .catch(() => {
             done(new Error('Invalid token'));
           });
       } catch (e) {
@@ -114,6 +118,7 @@ server.register(fastifyAuth);
 
 server.register(identityController, { prefix: '/identity/api/v1' });
 server.register(profileController, { prefix: '/profile/api/v1' });
+server.register(orderController, { prefix: '/order/api/v1' });
 
 server.after()
   .then(() => {

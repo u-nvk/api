@@ -1,7 +1,8 @@
 import { Knex } from 'knex';
+import { TableName } from '@libs/tables';
 
 export async function up(knex: Knex): Promise<void> {
-  await knex.schema.createTable('payment-methods', (tableBuilder) => {
+  await knex.schema.createTable(TableName.paymentMethods, (tableBuilder) => {
     tableBuilder.uuid('id', { primaryKey: true });
     tableBuilder.string('phone').notNullable();
     tableBuilder.integer('bank').notNullable();
@@ -10,5 +11,5 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-  await knex.schema.dropTable('payment-methods');
+  await knex.schema.dropTable(TableName.paymentMethods);
 }

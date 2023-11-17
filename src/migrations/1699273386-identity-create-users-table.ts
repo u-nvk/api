@@ -1,7 +1,8 @@
 import { Knex } from 'knex';
+import { TableName } from '@libs/tables';
 
 export async function up(knex: Knex): Promise<void> {
-  await knex.schema.createTable('users', (tableBuilder) => {
+  await knex.schema.createTable(TableName.users, (tableBuilder) => {
     tableBuilder.uuid('id', { primaryKey: true });
     tableBuilder.string('vkAccessToken');
     tableBuilder.string('vkId').notNullable();
@@ -11,5 +12,5 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-  await knex.schema.dropTable('users');
+  await knex.schema.dropTable(TableName.users);
 }

@@ -44,6 +44,7 @@ export const identityController: FastifyPluginAsync = async (server: FastifyInst
 
       reply.status(200).send({ accessToken });
     } catch (e) {
+      server.log.error(e);
       reply.status(500).send({ description: 'Внутренняя ошибка' });
     }
   });

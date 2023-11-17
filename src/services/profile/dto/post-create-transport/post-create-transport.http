@@ -1,0 +1,9 @@
+POST http://{{host}}/profile/api/v1/data/transports
+Content-Type: application/json
+Authorization: {{access-token}}
+
+{
+  "name": "Mercedes S Class",
+  "plateNumber": "А012ВУ18",
+  "color": "black"
+}
