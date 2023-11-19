@@ -14,14 +14,14 @@ export interface GetProfileDataHandlerReturn {
   }[];
 }
 
-export const getProfileDataHandler = async (fastiy: FastifyInstance, userId: string): Promise<GetProfileDataHandlerReturn> => {
+export const getProfileDataHandler = async (fastiy: FastifyInstance, pId: string): Promise<GetProfileDataHandlerReturn> => {
   const profilesTable = fastiy.cdb.table<ProfilesTable>(TableName.profiles);
   const paymentsTable = fastiy.cdb.table<PaymentMethodsTable>(TableName.paymentMethods);
 
   const [profile, payments]: [ProfilesTable | undefined, PaymentMethodsTable[]] = await Promise.all(
     [
-      profilesTable.where('userId', userId).first(),
-      paymentsTable.where('ownerPid', userId),
+      profilesTable.where('id', pId).first(),
+      paymentsTable.where('ownerPid', pId),
     ],
   );
 

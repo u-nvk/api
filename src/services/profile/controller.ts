@@ -27,7 +27,7 @@ export const profileController: FastifyPluginAsync = async (server: FastifyInsta
     },
     preHandler: server.auth([server.verifyJwtIdentity]),
   }, async (request: FastifyRequest, reply) => {
-    const userId: string | undefined = request.requestContext.get('decodedJwt')?.sub;
+    const userId: string | undefined = request.requestContext.get('decodedJwt')?.pId;
 
     if (!userId) {
       throw new Error('Not access token');
