@@ -4,6 +4,7 @@ import { ProfilesTable, PaymentMethodsTable } from '../db';
 
 export interface GetProfileDataHandlerReturn {
   userId: string;
+  userPid: string;
   surname: string;
   firstname: string;
   isDriver: boolean;
@@ -30,6 +31,7 @@ export const getProfileDataHandler = async (fastiy: FastifyInstance, userId: str
 
   return {
     userId: profile.userId,
+    userPid: profile.id,
     firstname: profile.firstname,
     surname: profile.surname,
     isDriver: profile.isDriver,

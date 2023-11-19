@@ -2,6 +2,7 @@ import { S } from 'fluent-json-schema';
 
 export interface GetProfileDataResponseDto {
   userId: string;
+  userPid: string;
   surname: string;
   firstname: string;
   isDriver: boolean;
@@ -13,6 +14,9 @@ export interface GetProfileDataResponseDto {
 
 export const GetProfileDataResponseDtoSchema = S.object()
   .prop('userId', S.string().description('Идентификатор пользователя'))
+  .required()
+  .prop('userPid', S.string())
+  .description('Идентификатор профиля пользователя')
   .required()
   .prop('surname', S.string().description('Фамилия пользователя'))
   .required()
