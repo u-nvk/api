@@ -16,6 +16,7 @@ import {
 import { getOrderHandler } from './handlers/get-order.handler';
 import { getOrdersHandler } from './handlers/get-orders.handler';
 import { GetOrdersResponseDto, GetOrdersResponseDtoSchema } from './dto/get-orders/get-orders-response.dto';
+import { joinToOrderHandler } from './handlers/join-to-order.handler';
 
 export const orderController: FastifyPluginAsync = async (server: FastifyInstance) => {
   server.post<{ Body: PostCreateOrderRequestDto, Reply: StdOnlyIdResponseDto }>('/order', {
@@ -64,6 +65,7 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
         200: GetOrderResponseDtoSchema,
       },
     },
+    preHandler: server.auth([server.verifyJwtIdentity]),
   }, async (request: FastifyRequest<{ Params: GetOrderRequestUrlParam }>, reply) => {
     try {
       const data = await getOrderHandler(server, request.params.orderId);
@@ -85,11 +87,41 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
         500: StdErrorResponseSchema,
       },
     },
+    preHandler: server.auth([server.verifyJwtIdentity]),
   }, async (request, reply) => {
     try {
       const data = await getOrdersHandler(server);
 
       reply.status(200).send({ orders: data });
+    } catch (e) {
+      request.log.error(e);
+      reply.status(500);
+    }
+  });
+
+  server.post<{ Params: GetOrderRequestUrlParam }>('/order/:orderId/participants', {
+    schema: {
+      params: GetOrderRequestUrlParamSchema,
+      description: 'Записаться на поездку',
+      tags: ['Order'],
+      headers: StdAuthHeadersSchema,
+      response: {
+        200: StdOnlyIdResponseSchema,
+        500: StdErrorResponseSchema,
+      },
+    },
+    preHandler: server.auth([server.verifyJwtIdentity]),
+  }, async (request, reply) => {
+    try {
+      const userId: string | undefined = request.requestContext.get('decodedJwt')?.pId;
+
+      if (!userId) {
+        throw new Error('Not access token');
+      }
+
+      const id = await joinToOrderHandler(server, request.params.orderId, userId);
+
+      reply.status(200).send({ id });
     } catch (e) {
       request.log.error(e);
       reply.status(500);

@@ -1,0 +1,5 @@
+POST http://{{host}}/order/api/v1/order/1fcfb3f5-c58f-4201-ae79-9d26f7aea232/participants
+Content-Type: application/json
+Authorization: {{access-token}}
+
+{}
