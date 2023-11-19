@@ -1,6 +1,6 @@
-POST http://localhost:3000/profile/api/v1/data
+POST http://localhost:3000/profile/api/v1/data/user
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2a0lkIjo3ODEzOTg4NzMsInN1YiI6IjdkNDI4OGY0LTNlYmYtNDI4Ny05NzEwLWM3MjcxMzhhZDBiNyIsImlhdCI6MTY5OTcwMzI0MywiZXhwIjoxNzA3NDc5MjQzfQ.8L9Q4uTRbUOheSZljUlAYiE7w6nmLmbDD-1rxwkz8bY
+Authorization: {{access-token}}
 
 {
     "isDriver": true,

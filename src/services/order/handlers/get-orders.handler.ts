@@ -29,28 +29,30 @@ export const getOrdersHandler = async (fastify: FastifyInstance): Promise<OrderP
 
   const parts: ParticipantsTable[] = await participantTable.whereIn('orderId', result.map((i) => i.id));
 
-  return result.map((item) => {
-    const takenCount = parts.reduce((prev, curr) => {
-      if (curr.orderId === item.id) {
-        return prev + 1;
-      }
+  return result
+    .map((item) => {
+      const takenCount = parts.reduce((prev, curr) => {
+        if (curr.orderId === item.id) {
+          return prev + 1;
+        }
 
-      return prev;
-    }, 0);
+        return prev;
+      }, 0);
 
-    const participantIds: string[] = parts.filter((participant) => participant.orderId === item.id).map((participant) => participant.userPid);
+      const participantIds: string[] = parts.filter((participant) => participant.orderId === item.id).map((participant) => participant.userPid);
 
-    return {
-      id: item.id,
-      driverPid: item.driverPid,
-      price: item.price,
-      leftCount: item.startFreeSeatCount - takenCount,
-      route: {
-        from: item.from,
-        to: item.to,
-      },
-      participantIds,
-      timeStart: item.timeStart,
-    };
-  });
+      return {
+        id: item.id,
+        driverPid: item.driverPid,
+        price: item.price,
+        leftCount: item.startFreeSeatCount - takenCount,
+        route: {
+          from: item.from,
+          to: item.to,
+        },
+        participantIds,
+        timeStart: item.timeStart,
+      };
+    })
+    .sort((a, b) => new Date(b.timeStart).valueOf() - new Date(a.timeStart).valueOf());
 };

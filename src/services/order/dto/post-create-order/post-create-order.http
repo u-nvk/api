@@ -1,4 +1,4 @@
-POST http://{{host}}/order/api/v1/
+POST http://{{host}}/order/api/v1/order
 Content-Type: application/json
 Authorization: {{access-token}}
 

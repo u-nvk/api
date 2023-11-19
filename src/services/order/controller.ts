@@ -15,9 +15,10 @@ import {
 } from './dto';
 import { getOrderHandler } from './handlers/get-order.handler';
 import { getOrdersHandler } from './handlers/get-orders.handler';
+import { GetOrdersResponseDto, GetOrdersResponseDtoSchema } from './dto/get-orders/get-orders-response.dto';
 
 export const orderController: FastifyPluginAsync = async (server: FastifyInstance) => {
-  server.post<{ Body: PostCreateOrderRequestDto, Reply: StdOnlyIdResponseDto }>('/', {
+  server.post<{ Body: PostCreateOrderRequestDto, Reply: StdOnlyIdResponseDto }>('/order', {
     schema: {
       description: 'Создание поездки',
       tags: ['Order'],
@@ -53,7 +54,7 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
     }
   });
 
-  server.get<{ Reply: GetOrderResponseDto, Params: GetOrderRequestUrlParam }>('/:orderId', {
+  server.get<{ Reply: GetOrderResponseDto, Params: GetOrderRequestUrlParam }>('/order/:orderId', {
     schema: {
       description: 'Получение заявки',
       tags: ['Order'],
@@ -74,8 +75,16 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
     }
   });
 
-  server.get('/', {
-
+  server.get<{ Reply: GetOrdersResponseDto }>('/order', {
+    schema: {
+      description: 'Получение всех заявок',
+      tags: ['Order'],
+      headers: StdAuthHeadersSchema,
+      response: {
+        200: GetOrdersResponseDtoSchema,
+        500: StdErrorResponseSchema,
+      },
+    },
   }, async (request, reply) => {
     try {
       const data = await getOrdersHandler(server);

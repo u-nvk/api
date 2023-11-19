@@ -16,9 +16,9 @@ import { setDriverTransportHandler } from './handlers/set-driver-transport.handl
 import { getDriverTransportsHandler } from './handlers/get-driver-transports.handler';
 
 export const profileController: FastifyPluginAsync = async (server: FastifyInstance) => {
-  server.get<{ Reply: GetProfileDataResponseDto }>('/data', {
+  server.get<{ Reply: GetProfileDataResponseDto }>('/data/user', {
     schema: {
-      description: 'Получение данных профиля',
+      description: 'Получение данных о пользователе',
       tags: ['Profile'],
       response: {
         200: GetProfileDataResponseDtoSchema,
@@ -38,7 +38,7 @@ export const profileController: FastifyPluginAsync = async (server: FastifyInsta
   });
 
   server.post<{ Body: PostProfileDataRequestDto }>(
-    '/data',
+    '/data/user',
     {
       schema: {
         description: 'Установка данных профиля. Данные переписываются, а не дополняются. Например, если массив был [1] и вы в данном ресте отправили [2], то в базе будет храниться [2]. Если нужно, чтобы было [1, 2], то так в body отправлять и надо',
@@ -75,6 +75,7 @@ export const profileController: FastifyPluginAsync = async (server: FastifyInsta
       description: 'Привязка транспорта к профилю водителя',
       body: PostCreateTransportRequestDtoSchema,
       headers: StdAuthHeadersSchema,
+      tags: ['Profile'],
       response: {
         200: StdOnlyIdResponseSchema,
         500: StdErrorResponseSchema,
@@ -106,6 +107,7 @@ export const profileController: FastifyPluginAsync = async (server: FastifyInsta
     schema: {
       description: 'Получение транспортов, привязанных к пользователю',
       headers: StdAuthHeadersSchema,
+      tags: ['Profile'],
       response: {
         200: GetTransportsResponseDtoSchema,
         500: StdErrorResponseSchema,
