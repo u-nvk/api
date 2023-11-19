@@ -5,5 +5,5 @@ import { TransportsTable } from '../db';
 export const getDriverTransportsHandler = async (fastify: FastifyInstance, profileId: string): Promise<TransportsTable[]> => {
   const transportTable = fastify.cdb.table<TransportsTable>(TableName.transports);
 
-  return transportTable.where('ownerId', profileId);
+  return transportTable.where('ownerPid', profileId);
 };

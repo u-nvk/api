@@ -3,5 +3,5 @@ export interface TransportsTable {
   name: string;
   plateNumber: string;
   color: string;
-  ownerId: string;
+  ownerPid: string;
 }

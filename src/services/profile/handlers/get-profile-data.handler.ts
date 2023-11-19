@@ -20,7 +20,7 @@ export const getProfileDataHandler = async (fastiy: FastifyInstance, userId: str
   const [profile, payments]: [ProfilesTable | undefined, PaymentMethodsTable[]] = await Promise.all(
     [
       profilesTable.where('userId', userId).first(),
-      paymentsTable.where('ownerId', userId),
+      paymentsTable.where('ownerPid', userId),
     ],
   );
 

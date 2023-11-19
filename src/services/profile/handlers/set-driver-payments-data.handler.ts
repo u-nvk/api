@@ -10,12 +10,12 @@ export enum BankNumber {
   vtb,
 }
 
-export const setDriverPaymentsDataHandler = async (fastiy: FastifyInstance, userId: string, payments: { phone: string, bank: BankNumber }[]): Promise<boolean> => {
+export const setDriverPaymentsDataHandler = async (fastiy: FastifyInstance, profileId: string, payments: { phone: string, bank: BankNumber }[]): Promise<boolean> => {
   const paymentTable = fastiy.cdb.table<PaymentMethodsTable>(TableName.paymentMethods);
 
   const objectsToInsert: PaymentMethodsTable[] = payments.map((item) => ({
     id: randomUUID(),
-    ownerId: userId,
+    ownerPid: profileId,
     phone: item.phone,
     bank: item.bank,
   }));

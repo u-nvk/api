@@ -7,7 +7,7 @@ export async function up(knex: Knex): Promise<void> {
     tableBuilder.string('name').notNullable();
     tableBuilder.string('plateNumber').notNullable();
     tableBuilder.string('color').notNullable();
-    tableBuilder.uuid('ownerId').notNullable().references('id').inTable(TableName.profiles);
+    tableBuilder.uuid('ownerPid').notNullable().references('id').inTable(TableName.profiles);
   });
 }
 

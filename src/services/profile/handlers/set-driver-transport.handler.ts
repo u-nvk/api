@@ -9,18 +9,20 @@ export interface DriverTransport {
   plate: string;
 }
 
-export const setDriverTransportHandler = async (fastify: FastifyInstance, transportData: DriverTransport, profileId: string): Promise<true> => {
+export const setDriverTransportHandler = async (fastify: FastifyInstance, transportData: DriverTransport, profileId: string): Promise<string> => {
   const transportTable = fastify.cdb.table<TransportsTable>(TableName.transports);
+
+  const id = randomUUID();
 
   const insertData: TransportsTable = {
     color: transportData.color,
-    id: randomUUID(),
+    id,
     name: transportData.name,
     plateNumber: transportData.plate,
-    ownerId: profileId,
+    ownerPid: profileId,
   };
 
   await transportTable.insert(insertData);
 
-  return true;
+  return id;
 };

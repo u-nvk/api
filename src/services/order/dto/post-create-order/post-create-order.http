@@ -1,0 +1,14 @@
+POST http://{{host}}/order/api/v1/
+Content-Type: application/json
+Authorization: {{access-token}}
+
+{
+  "route": {
+    "from": "NVK",
+    "to": "Библиотечная 45"
+  },
+  "price": 100,
+  "transportId": "49ab1480-8804-4336-bbf2-8bb6d366b2cc",
+  "timeStart": "2023-11-18T11:28:16.669Z",
+  "startFreeSeatCount": 4
+}

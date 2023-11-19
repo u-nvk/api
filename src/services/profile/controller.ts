@@ -1,7 +1,7 @@
 import {
   FastifyInstance, FastifyPluginAsync, FastifyRequest,
 } from 'fastify';
-import { StdAuthHeadersSchema, StdErrorResponseSchema } from '@libs/http';
+import { StdAuthHeadersSchema, StdErrorResponseSchema, StdOnlyIdResponseSchema } from '@libs/http';
 import {
   PostProfileDataRequestDto,
   PostDataRequestDtoSchema,
@@ -59,11 +59,11 @@ export const profileController: FastifyPluginAsync = async (server: FastifyInsta
       }
 
       if (request.body.paymentMethods) {
-        await setDriverPaymentsDataHandler(server, userId.sub, request.body.paymentMethods);
+        await setDriverPaymentsDataHandler(server, userId.pId, request.body.paymentMethods);
       }
 
       if (typeof request.body.isDriver === 'boolean') {
-        await setDriverStatusHandler(server, userId.sub, request.body.isDriver);
+        await setDriverStatusHandler(server, userId.pId, request.body.isDriver);
       }
 
       reply.status(200);
@@ -76,7 +76,7 @@ export const profileController: FastifyPluginAsync = async (server: FastifyInsta
       body: PostCreateTransportRequestDtoSchema,
       headers: StdAuthHeadersSchema,
       response: {
-        200: {},
+        200: StdOnlyIdResponseSchema,
         500: StdErrorResponseSchema,
       },
     },
@@ -89,13 +89,13 @@ export const profileController: FastifyPluginAsync = async (server: FastifyInsta
     }
 
     try {
-      await setDriverTransportHandler(server, {
+      const id = await setDriverTransportHandler(server, {
         name: request.body.name,
         color: request.body.color,
         plate: request.body.plateNumber,
       }, userId.pId);
 
-      reply.status(200);
+      reply.status(200).send({ id });
     } catch (e) {
       request.log.error(e);
       reply.status(500).send({ description: 'Внутренняя ошибка' });

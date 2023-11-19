@@ -6,7 +6,7 @@ export async function up(knex: Knex): Promise<void> {
     tableBuilder.uuid('id', { primaryKey: true });
     tableBuilder.string('phone').notNullable();
     tableBuilder.integer('bank').notNullable();
-    tableBuilder.uuid('ownerId').notNullable().references('userId').inTable('profiles');
+    tableBuilder.uuid('ownerPid').notNullable().references('id').inTable(TableName.profiles);
   });
 }
 

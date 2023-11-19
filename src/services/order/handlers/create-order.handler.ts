@@ -21,16 +21,22 @@ interface OrderData {
   price: number;
   transportId: string;
   timeStart: string;
+  startFreeSeatCount: number;
 }
 
-export const createOrderHandler = async (fastify: FastifyInstance, data: OrderData) => {
+export const createOrderHandler = async (fastify: FastifyInstance, data: OrderData): Promise<string> => {
   const ordersTable = fastify.cdb.table<OrdersTable>(TableName.orders);
   const routesTable = fastify.cdb.table<RoutesTable>(TableName.routes);
 
   const routeId = randomUUID();
 
   try {
-    await routesTable.insert({ id: routeId, from: data.route.from, to: data.route.to });
+    const insertValue: RoutesTable = {
+      id: routeId,
+      from: data.route.from,
+      to: data.route.to,
+    };
+    await routesTable.insert(insertValue);
   } catch (e) {
     fastify.log.error(e);
     throw new Error('Ошибка при создании маршрута');
@@ -38,17 +44,27 @@ export const createOrderHandler = async (fastify: FastifyInstance, data: OrderDa
 
   const orderId = randomUUID();
 
+  let timeStartToIso: string = '';
   try {
-    await ordersTable.insert({
+    timeStartToIso = new Date(data.timeStart).toISOString();
+  } catch (e) {
+    throw new Error('Не смогли конвертировать дату к ISO');
+  }
+
+  try {
+    const insertValue: OrdersTable = {
       id: orderId,
-      driverId: data.driverProfileId,
+      driverPid: data.driverProfileId,
       routeId,
       price: data.price,
       transportId: data.transportId,
-      timeStart: data.timeStart,
-    });
+      timeStart: timeStartToIso,
+      startFreeSeatCount: data.startFreeSeatCount,
+    };
+    await ordersTable.insert(insertValue);
   } catch (e) {
-    fastify.log.error('');
+    fastify.log.error(e);
+    throw new Error('Ошибка при создании заявки');
   }
 
   return orderId;

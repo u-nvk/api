@@ -1,8 +1,9 @@
 export interface OrdersTable {
   id: string;
-  driverId: string;
+  driverPid: string;
   routeId: string;
   price: number;
   transportId: string;
+  startFreeSeatCount: number;
   timeStart: string;
 }
