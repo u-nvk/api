@@ -8,7 +8,7 @@ Authorization: {{access-token}}
     "to": "Библиотечная 45"
   },
   "price": 100,
-  "transportId": "7c932273-e83a-4f93-834b-6f52d1152d6f",
-  "timeStart": "2023-11-18T11:28:16.669Z",
+  "transportId": "b5f08de3-bbf8-47fc-b567-67211716a62d",
+  "timeStart": "2023-12-18T11:28:16.669Z",
   "startFreeSeatCount": 4
 }

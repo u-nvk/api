@@ -25,6 +25,7 @@ export const getOrdersHandler = async (fastify: FastifyInstance): Promise<OrderP
       `${TableName.orders}.*`,
       `${TableName.routes}.id as rId`,
     ])
+    .where('timeStart', '>=', (new Date()).toISOString())
     .leftJoin(`${TableName.routes}`, `${TableName.orders}.routeId`, `${TableName.routes}.id`);
 
   const parts: ParticipantsTable[] = await participantTable.whereIn('orderId', result.map((i) => i.id));

@@ -1,4 +1,5 @@
 import { S } from 'fluent-json-schema';
+import { ISO, UUID } from '@libs/common';
 
 export interface GetOrderResponseDto {
   id: string;
@@ -34,8 +35,8 @@ const userData = S.object()
   .required();
 
 export const GetOrderResponseDtoSchema = S.object()
-  .prop('id', S.string()).required()
-  .prop('driverPid', S.string())
+  .prop('id', UUID()).required()
+  .prop('driverPid', UUID())
   .required()
   .prop('price', S.number())
   .required()
@@ -58,7 +59,7 @@ export const GetOrderResponseDtoSchema = S.object()
       .required(),
   )
   .required()
-  .prop('timeStart', S.string())
+  .prop('timeStart', ISO())
   .required()
   .prop(
     'driver',

@@ -24,7 +24,7 @@ import { getOrdersHistoryHandler } from './handlers/get-orders-history.handler';
 export const orderController: FastifyPluginAsync = async (server: FastifyInstance) => {
   server.post<{ Body: PostCreateOrderRequestDto, Reply: StdOnlyIdResponseDto }>('/order', {
     schema: {
-      description: 'Создание поездки',
+      summary: 'Создание поездки',
       tags: ['Order'],
       response: {
         200: StdOnlyIdResponseSchema,
@@ -40,6 +40,10 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
 
       if (!userId) {
         throw new Error('Not access token');
+      }
+
+      if (new Date(request.body.timeStart).getTime() - new Date().getTime() <= 0) {
+        throw new Error('Can not create order with passed time');
       }
 
       const orderId = await createOrderHandler(server, {
@@ -60,7 +64,8 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
 
   server.get<{ Reply: GetOrderResponseDto, Params: GetOrderRequestUrlParam }>('/order/:orderId', {
     schema: {
-      description: 'Получение заявки',
+      summary: 'Получение заявки',
+      description: 'Получение заявки по orderId',
       tags: ['Order'],
       params: GetOrderRequestUrlParamSchema,
       headers: StdAuthHeadersSchema,
@@ -82,7 +87,8 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
 
   server.get<{ Reply: GetOrdersResponseDto }>('/order', {
     schema: {
-      description: 'Получение всех заявок на поезду',
+      summary: 'Получение всех заявок на поезду',
+      description: 'Вернутся только те заявки, timeStart которых больше текущего времени',
       tags: ['Order'],
       headers: StdAuthHeadersSchema,
       response: {

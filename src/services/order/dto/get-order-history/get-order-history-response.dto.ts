@@ -1,4 +1,5 @@
 import { S } from 'fluent-json-schema';
+import { ISO, UUID } from '@libs/common';
 
 export interface GetOrderHistoryResponseDto {
   list: {
@@ -16,23 +17,26 @@ export interface GetOrderHistoryResponseDto {
 }
 
 export const GetOrderHistoryResponseDtoSchema = S.object()
-  .prop('list', S.array().items(S.object()
-    .prop('orderId', S.string()).description('Айди поездки').required()
-    .prop('userPid', S.string())
-    .description('Айди профиля пользователя, который участвовал в поездке')
-    .required()
-    .prop('driverPid', S.string())
-    .description('Айди профиля водителя')
-    .required()
-    .prop('price', S.number())
-    .description('Цена')
-    .required()
-    .prop('timeStart', S.string())
-    .description('Время начала поездки ISO')
-    .required()
-    .prop('transport', S.object()
-      .prop('from', S.string()).description('Откуда').required()
-      .prop('to', S.string().description('Куда'))
-      .required())
-    .required()))
+  .prop('list', S.array()
+    .items(
+      S.object()
+        .prop('orderId', UUID()).description('Айди поездки').required()
+        .prop('userPid', UUID())
+        .description('Айди профиля пользователя, который участвовал в поездке')
+        .required()
+        .prop('driverPid', UUID())
+        .description('Айди профиля водителя')
+        .required()
+        .prop('price', S.number())
+        .description('Цена')
+        .required()
+        .prop('timeStart', ISO())
+        .description('Время начала поездки ISO')
+        .required()
+        .prop('transport', S.object()
+          .prop('from', S.string()).description('Откуда').required()
+          .prop('to', S.string().description('Куда'))
+          .required())
+        .required(),
+    ))
   .required();

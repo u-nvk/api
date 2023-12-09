@@ -1,4 +1,5 @@
 import { S } from 'fluent-json-schema';
+import { ISO, UUID } from '@libs/common';
 
 export type NVK = 'NVK';
 
@@ -33,10 +34,10 @@ export const PostCreateOrderRequestDtoSchema = S.object()
   ]))
   .prop('price', S.number()).description('Стоимость проезда с человека')
   .required()
-  .prop('transportId', S.string())
+  .prop('transportId', UUID())
   .description('Айди транспорта')
   .required()
-  .prop('timeStart', S.string())
+  .prop('timeStart', ISO())
   .description('Время начала поездки в ISO формате')
   .required()
   .prop('startFreeSeatCount', S.number().minimum(1))
