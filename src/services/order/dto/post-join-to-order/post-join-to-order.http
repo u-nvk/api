@@ -1,4 +1,4 @@
-POST http://{{host}}/order/api/v1/order/71d5aeff-2b1f-48b3-980c-5f94a9622cd1/participants
+POST http://{{host}}/order/api/v1/order/54655510-44ca-4b5c-8f21-cf884215ea9f/participants
 Content-Type: application/json
 Authorization: {{access-token}}
 

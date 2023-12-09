@@ -7,7 +7,7 @@ import {
 } from '@libs/http';
 import { createOrderHandler } from './handlers/create-order.handler';
 import {
-  DeleteOrderRequestUrlParam,
+  DeleteOrderRequestUrlParam, DeleteUnjoinToOrderRequestUrlParam,
   GetOrderHistoryResponseDto, GetOrderHistoryResponseDtoSchema,
   GetOrderRequestUrlParam,
   GetOrderRequestUrlParamSchema,
@@ -22,6 +22,7 @@ import { GetOrdersResponseDto, GetOrdersResponseDtoSchema } from './dto/get-orde
 import { joinToOrderHandler } from './handlers/join-to-order.handler';
 import { getOrdersHistoryHandler } from './handlers/get-orders-history.handler';
 import { deleteOrderHandler } from './handlers/delete-order.handler';
+import { unjoinToOrderHandler } from './handlers/unjoin-to-order.handler';
 
 export const orderController: FastifyPluginAsync = async (server: FastifyInstance) => {
   server.get<{ Reply: GetOrderResponseDto, Params: GetOrderRequestUrlParam }>('/order/:orderId', {
@@ -169,6 +170,33 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
     }
   });
 
+  server.delete<{ Params: DeleteUnjoinToOrderRequestUrlParam }>('/order/:orderId/participants', {
+    schema: {
+      summary: 'Убрать свою запись на поездку',
+      tags: ['Order'],
+      headers: StdAuthHeadersSchema,
+      response: {
+        500: StdErrorResponseSchema,
+      },
+    },
+    preHandler: server.auth([server.verifyJwtIdentity]),
+  }, async (request: FastifyRequest<{ Params: DeleteUnjoinToOrderRequestUrlParam }>, reply) => {
+    try {
+      const userId: string | undefined = request.requestContext.get('decodedJwt')?.pId;
+
+      if (!userId) {
+        throw new Error('Not access token');
+      }
+
+      await unjoinToOrderHandler(server, request.params.orderId, userId);
+
+      reply.status(200);
+    } catch (e) {
+      request.log.error(e);
+      reply.status(500);
+    }
+  });
+
   server.delete<{ Params: DeleteOrderRequestUrlParam }>('/order/:orderId', {
     schema: {
       tags: ['Order'],
@@ -176,6 +204,9 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
       headers: StdAuthHeadersSchema,
       params: GetOrderRequestUrlParamSchema,
       description: 'Удаление заявки о перевозке. Может выполнять только водитель создавший заявку',
+      response: {
+        500: StdErrorResponseSchema,
+      },
     },
     preHandler: server.auth([server.verifyJwtIdentity]),
   }, async (request: FastifyRequest<{ Params: DeleteOrderRequestUrlParam }>, reply) => {
