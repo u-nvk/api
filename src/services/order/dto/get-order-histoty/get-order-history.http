@@ -1,0 +1,3 @@
+GET http://{{host}}/order/api/v1/order/history
+Content-Type: application/json
+Authorization: {{access-token}}

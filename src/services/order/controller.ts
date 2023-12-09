@@ -5,11 +5,13 @@ import {
   StdOnlyIdResponseDto,
   StdOnlyIdResponseSchema,
 } from '@libs/http';
-import * as repl from 'repl';
 import { createOrderHandler } from './handlers/create-order.handler';
 import {
+  GetOrderHistoryResponseDto, GetOrderHistoryResponseDtoSchema,
   GetOrderRequestUrlParam,
-  GetOrderRequestUrlParamSchema, GetOrderResponseDto, GetOrderResponseDtoSchema,
+  GetOrderRequestUrlParamSchema,
+  GetOrderResponseDto,
+  GetOrderResponseDtoSchema,
   PostCreateOrderRequestDto,
   PostCreateOrderRequestDtoSchema,
 } from './dto';
@@ -17,6 +19,7 @@ import { getOrderHandler } from './handlers/get-order.handler';
 import { getOrdersHandler } from './handlers/get-orders.handler';
 import { GetOrdersResponseDto, GetOrdersResponseDtoSchema } from './dto/get-orders/get-orders-response.dto';
 import { joinToOrderHandler } from './handlers/join-to-order.handler';
+import { getOrdersHistoryHandler } from './handlers/get-orders-history.handler';
 
 export const orderController: FastifyPluginAsync = async (server: FastifyInstance) => {
   server.post<{ Body: PostCreateOrderRequestDto, Reply: StdOnlyIdResponseDto }>('/order', {
@@ -79,7 +82,7 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
 
   server.get<{ Reply: GetOrdersResponseDto }>('/order', {
     schema: {
-      description: 'Получение всех заявок',
+      description: 'Получение всех заявок на поезду',
       tags: ['Order'],
       headers: StdAuthHeadersSchema,
       response: {
@@ -122,6 +125,36 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
       const id = await joinToOrderHandler(server, request.params.orderId, userId);
 
       reply.status(200).send({ id });
+    } catch (e) {
+      request.log.error(e);
+      reply.status(500);
+    }
+  });
+
+  server.get<{ Reply: GetOrderHistoryResponseDto }>('/order/history', {
+    schema: {
+      description: 'Получить историю поездок пользователя',
+      tags: ['Order'],
+      headers: StdAuthHeadersSchema,
+      response: {
+        200: GetOrderHistoryResponseDtoSchema,
+        500: StdErrorResponseSchema,
+      },
+    },
+    preHandler: server.auth([server.verifyJwtIdentity]),
+  }, async (request, reply) => {
+    try {
+      const userId: string | undefined = request.requestContext.get('decodedJwt')?.pId;
+
+      if (!userId) {
+        throw new Error('Not access token');
+      }
+
+      const result = await getOrdersHistoryHandler(server, userId);
+
+      return {
+        list: result,
+      };
     } catch (e) {
       request.log.error(e);
       reply.status(500);
