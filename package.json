@@ -1,6 +1,6 @@
 {
   "name": "u-nvk-api",
-  "version": "0.0.8",
+  "version": "0.0.10",
   "description": "Api for u-nvk project",
   "main": "index.js",
   "private": true,
