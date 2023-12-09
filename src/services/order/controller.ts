@@ -7,6 +7,7 @@ import {
 } from '@libs/http';
 import { createOrderHandler } from './handlers/create-order.handler';
 import {
+  DeleteOrderRequestUrlParam,
   GetOrderHistoryResponseDto, GetOrderHistoryResponseDtoSchema,
   GetOrderRequestUrlParam,
   GetOrderRequestUrlParamSchema,
@@ -20,6 +21,7 @@ import { getOrdersHandler } from './handlers/get-orders.handler';
 import { GetOrdersResponseDto, GetOrdersResponseDtoSchema } from './dto/get-orders/get-orders-response.dto';
 import { joinToOrderHandler } from './handlers/join-to-order.handler';
 import { getOrdersHistoryHandler } from './handlers/get-orders-history.handler';
+import { deleteOrderHandler } from './handlers/delete-order.handler';
 
 export const orderController: FastifyPluginAsync = async (server: FastifyInstance) => {
   server.get<{ Reply: GetOrderResponseDto, Params: GetOrderRequestUrlParam }>('/order/:orderId', {
@@ -141,7 +143,7 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
   server.post<{ Params: GetOrderRequestUrlParam }>('/order/:orderId/participants', {
     schema: {
       params: GetOrderRequestUrlParamSchema,
-      description: 'Записаться на поездку',
+      summary: 'Записаться на поездку',
       tags: ['Order'],
       headers: StdAuthHeadersSchema,
       response: {
@@ -161,6 +163,32 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
       const id = await joinToOrderHandler(server, request.params.orderId, userId);
 
       reply.status(200).send({ id });
+    } catch (e) {
+      request.log.error(e);
+      reply.status(500);
+    }
+  });
+
+  server.delete<{ Params: DeleteOrderRequestUrlParam }>('/order/:orderId', {
+    schema: {
+      tags: ['Order'],
+      summary: 'Удаление заявки о перевозке',
+      headers: StdAuthHeadersSchema,
+      params: GetOrderRequestUrlParamSchema,
+      description: 'Удаление заявки о перевозке. Может выполнять только водитель создавший заявку',
+    },
+    preHandler: server.auth([server.verifyJwtIdentity]),
+  }, async (request: FastifyRequest<{ Params: DeleteOrderRequestUrlParam }>, reply) => {
+    try {
+      const userId: string | undefined = request.requestContext.get('decodedJwt')?.pId;
+
+      if (!userId) {
+        throw new Error('Not access token');
+      }
+
+      const result = await deleteOrderHandler(server, request.params.orderId, userId);
+
+      reply.status(result ? 200 : 500);
     } catch (e) {
       request.log.error(e);
       reply.status(500);
