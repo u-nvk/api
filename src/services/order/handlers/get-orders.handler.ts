@@ -26,7 +26,8 @@ export const getOrdersHandler = async (fastify: FastifyInstance): Promise<OrderP
       `${TableName.routes}.id as rId`,
     ])
     .where('timeStart', '>=', (new Date()).toISOString())
-    .leftJoin(`${TableName.routes}`, `${TableName.orders}.routeId`, `${TableName.routes}.id`);
+    .leftJoin(`${TableName.routes}`, `${TableName.orders}.routeId`, `${TableName.routes}.id`)
+    .orderBy('timeStart', 'asc');
 
   const parts: ParticipantsTable[] = await participantTable.whereIn('orderId', result.map((i) => i.id));
 
@@ -54,6 +55,5 @@ export const getOrdersHandler = async (fastify: FastifyInstance): Promise<OrderP
         participantIds,
         timeStart: item.timeStart,
       };
-    })
-    .sort((a, b) => new Date(b.timeStart).valueOf() - new Date(a.timeStart).valueOf());
+    });
 };

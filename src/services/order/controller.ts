@@ -22,6 +22,82 @@ import { joinToOrderHandler } from './handlers/join-to-order.handler';
 import { getOrdersHistoryHandler } from './handlers/get-orders-history.handler';
 
 export const orderController: FastifyPluginAsync = async (server: FastifyInstance) => {
+  server.get<{ Reply: GetOrderResponseDto, Params: GetOrderRequestUrlParam }>('/order/:orderId', {
+    schema: {
+      summary: 'Получение заявки',
+      description: 'Получение заявки по orderId',
+      tags: ['Order'],
+      params: GetOrderRequestUrlParamSchema,
+      headers: StdAuthHeadersSchema,
+      response: {
+        200: GetOrderResponseDtoSchema,
+      },
+    },
+    preHandler: server.auth([server.verifyJwtIdentity]),
+  }, async (request: FastifyRequest<{ Params: GetOrderRequestUrlParam }>, reply) => {
+    try {
+      const data = await getOrderHandler(server, request.params.orderId);
+
+      reply.status(200).send(data);
+    } catch (e) {
+      request.log.error(e);
+      reply.status(500);
+    }
+  });
+
+  server.get<{ Reply: GetOrdersResponseDto }>('/order', {
+    schema: {
+      summary: 'Получение всех заявок на поездку',
+      description: 'Вернутся только те заявки, timeStart которых больше текущего времени',
+      tags: ['Order'],
+      headers: StdAuthHeadersSchema,
+      response: {
+        200: GetOrdersResponseDtoSchema,
+        500: StdErrorResponseSchema,
+      },
+    },
+    preHandler: server.auth([server.verifyJwtIdentity]),
+  }, async (request, reply) => {
+    try {
+      const data = await getOrdersHandler(server);
+
+      reply.status(200).send({ orders: data });
+    } catch (e) {
+      request.log.error(e);
+      reply.status(500);
+    }
+  });
+
+  server.get<{ Reply: GetOrderHistoryResponseDto }>('/order/history', {
+    schema: {
+      description: 'Получить историю поездок пользователя',
+      tags: ['Order'],
+      headers: StdAuthHeadersSchema,
+      response: {
+        200: GetOrderHistoryResponseDtoSchema,
+        500: StdErrorResponseSchema,
+      },
+    },
+    preHandler: server.auth([server.verifyJwtIdentity]),
+  }, async (request, reply) => {
+    try {
+      const userId: string | undefined = request.requestContext.get('decodedJwt')?.pId;
+
+      if (!userId) {
+        throw new Error('Not access token');
+      }
+
+      const result = await getOrdersHistoryHandler(server, userId);
+
+      return {
+        list: result,
+      };
+    } catch (e) {
+      request.log.error(e);
+      reply.status(500);
+    }
+  });
+
   server.post<{ Body: PostCreateOrderRequestDto, Reply: StdOnlyIdResponseDto }>('/order', {
     schema: {
       summary: 'Создание поездки',
@@ -62,52 +138,6 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
     }
   });
 
-  server.get<{ Reply: GetOrderResponseDto, Params: GetOrderRequestUrlParam }>('/order/:orderId', {
-    schema: {
-      summary: 'Получение заявки',
-      description: 'Получение заявки по orderId',
-      tags: ['Order'],
-      params: GetOrderRequestUrlParamSchema,
-      headers: StdAuthHeadersSchema,
-      response: {
-        200: GetOrderResponseDtoSchema,
-      },
-    },
-    preHandler: server.auth([server.verifyJwtIdentity]),
-  }, async (request: FastifyRequest<{ Params: GetOrderRequestUrlParam }>, reply) => {
-    try {
-      const data = await getOrderHandler(server, request.params.orderId);
-
-      reply.status(200).send(data);
-    } catch (e) {
-      request.log.error(e);
-      reply.status(500);
-    }
-  });
-
-  server.get<{ Reply: GetOrdersResponseDto }>('/order', {
-    schema: {
-      summary: 'Получение всех заявок на поезду',
-      description: 'Вернутся только те заявки, timeStart которых больше текущего времени',
-      tags: ['Order'],
-      headers: StdAuthHeadersSchema,
-      response: {
-        200: GetOrdersResponseDtoSchema,
-        500: StdErrorResponseSchema,
-      },
-    },
-    preHandler: server.auth([server.verifyJwtIdentity]),
-  }, async (request, reply) => {
-    try {
-      const data = await getOrdersHandler(server);
-
-      reply.status(200).send({ orders: data });
-    } catch (e) {
-      request.log.error(e);
-      reply.status(500);
-    }
-  });
-
   server.post<{ Params: GetOrderRequestUrlParam }>('/order/:orderId/participants', {
     schema: {
       params: GetOrderRequestUrlParamSchema,
@@ -131,36 +161,6 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
       const id = await joinToOrderHandler(server, request.params.orderId, userId);
 
       reply.status(200).send({ id });
-    } catch (e) {
-      request.log.error(e);
-      reply.status(500);
-    }
-  });
-
-  server.get<{ Reply: GetOrderHistoryResponseDto }>('/order/history', {
-    schema: {
-      description: 'Получить историю поездок пользователя',
-      tags: ['Order'],
-      headers: StdAuthHeadersSchema,
-      response: {
-        200: GetOrderHistoryResponseDtoSchema,
-        500: StdErrorResponseSchema,
-      },
-    },
-    preHandler: server.auth([server.verifyJwtIdentity]),
-  }, async (request, reply) => {
-    try {
-      const userId: string | undefined = request.requestContext.get('decodedJwt')?.pId;
-
-      if (!userId) {
-        throw new Error('Not access token');
-      }
-
-      const result = await getOrdersHistoryHandler(server, userId);
-
-      return {
-        list: result,
-      };
     } catch (e) {
       request.log.error(e);
       reply.status(500);
