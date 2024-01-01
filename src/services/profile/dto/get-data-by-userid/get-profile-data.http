@@ -1,0 +1,3 @@
+GET http://localhost:3000/profile/api/v1/data/user/9426b3e4-1119-4609-87f9-b141f92a9ee8
+Content-Type: application/json
+Authorization: {{access-token}}

@@ -25,6 +25,7 @@ export interface GetOrderResponseDto {
     name: string;
   },
   timeStart: string;
+  leftCount: number;
 }
 
 const userData = S.object()
@@ -60,6 +61,8 @@ export const GetOrderResponseDtoSchema = S.object()
   )
   .required()
   .prop('timeStart', ISO())
+  .required()
+  .prop('leftCount', S.number())
   .required()
   .prop(
     'driver',

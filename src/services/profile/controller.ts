@@ -14,6 +14,14 @@ import { setDriverPaymentsDataHandler, getProfileDataHandler, GetProfileDataHand
 import { setDriverStatusHandler } from './handlers/set-driver-status.handler';
 import { setDriverTransportHandler } from './handlers/set-driver-transport.handler';
 import { getDriverTransportsHandler } from './handlers/get-driver-transports.handler';
+import {
+  GetDataByUseridResponseDto,
+  GetDataByUseridResponseDtoSchema,
+} from './dto/get-data-by-userid/get-data-by-userid-response.dto';
+import {
+  GetDataByUseridRequestUrlParam,
+  GetDataByUseridRequestUrlParamSchema,
+} from './dto/get-data-by-userid/get-data-by-userid-request.dto';
 
 export const profileController: FastifyPluginAsync = async (server: FastifyInstance) => {
   server.get<{ Reply: GetProfileDataResponseDto }>('/data/user', {
@@ -35,6 +43,31 @@ export const profileController: FastifyPluginAsync = async (server: FastifyInsta
 
     const data: GetProfileDataHandlerReturn = await getProfileDataHandler(server, userId);
     reply.status(200).send(data);
+  });
+
+  server.get<{ Reply: GetDataByUseridResponseDto, Params: GetDataByUseridRequestUrlParam }>('/data/user/:userPid', {
+    schema: {
+      description: 'Получение данных о пользователе по айди',
+      tags: ['Profile'],
+      params: GetDataByUseridRequestUrlParamSchema,
+      response: {
+        200: GetDataByUseridResponseDtoSchema,
+      },
+      headers: StdAuthHeadersSchema,
+    },
+    preHandler: server.auth([server.verifyJwtIdentity]),
+  }, async (request: FastifyRequest<{ Params: GetDataByUseridRequestUrlParam }>, reply) => {
+    try {
+      const result = await getProfileDataHandler(server, request.params.userPid);
+      const onlyNeedData: GetDataByUseridResponseDto = {
+        payments: result.payments,
+      };
+
+      reply.status(200).send(onlyNeedData);
+    } catch (e) {
+      request.log.error(e);
+      reply.status(500);
+    }
   });
 
   server.post<{ Body: PostProfileDataRequestDto }>(
