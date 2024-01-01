@@ -30,6 +30,7 @@ interface Order {
     vkId: number;
   }[],
   timeStart: string;
+  leftCount: number;
 }
 
 export const getOrderHandler = async (fastify: FastifyInstance, orderId: string): Promise<Order> => {
@@ -85,6 +86,7 @@ export const getOrderHandler = async (fastify: FastifyInstance, orderId: string)
       firstname: item.firstname,
       surname: item.surname,
       vkId: item.vkId,
+      pId: item.id,
     })),
     driver: {
       firstname: driver.firstname,
@@ -92,5 +94,6 @@ export const getOrderHandler = async (fastify: FastifyInstance, orderId: string)
       vkId: driver.vkId,
     },
     timeStart: orderData.timeStart,
+    leftCount: orderData.startFreeSeatCount - participants.length,
   };
 };

@@ -1,4 +1,4 @@
-import { fastify, FastifyInstance } from 'fastify';
+import { FastifyInstance } from 'fastify';
 import { TableName } from '@libs/tables';
 import { OrdersTable } from '../db';
 
