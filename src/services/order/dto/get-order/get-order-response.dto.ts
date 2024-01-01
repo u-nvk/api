@@ -18,6 +18,7 @@ export interface GetOrderResponseDto {
     firstname: string;
     surname: string;
     vkId: number;
+    pId: string;
   }[],
   transport: {
     plateNumber: string;
@@ -33,6 +34,8 @@ const userData = S.object()
   .prop('surname', S.string())
   .required()
   .prop('vkId', S.number())
+  .required()
+  .prop('pId', UUID())
   .required();
 
 export const GetOrderResponseDtoSchema = S.object()

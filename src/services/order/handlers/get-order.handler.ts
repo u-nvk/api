@@ -28,6 +28,7 @@ interface Order {
     firstname: string;
     surname: string;
     vkId: number;
+    pId: string;
   }[],
   timeStart: string;
   leftCount: number;
