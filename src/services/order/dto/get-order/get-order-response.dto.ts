@@ -34,9 +34,9 @@ const userData = S.object()
   .prop('surname', S.string())
   .required()
   .prop('vkId', S.number())
-  .required()
-  .prop('pId', UUID())
   .required();
+
+const userDataWithPid = userData.prop('pId', UUID()).required();
 
 export const GetOrderResponseDtoSchema = S.object()
   .prop('id', UUID()).required()
@@ -75,7 +75,7 @@ export const GetOrderResponseDtoSchema = S.object()
   .prop(
     'participants',
     S.array().items(
-      userData,
+      userDataWithPid,
     ),
   )
   .required();
