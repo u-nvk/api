@@ -1,6 +1,5 @@
 import { FastifyInstance } from 'fastify';
 import { TableName } from '@libs/tables';
-import { QueryBuilder } from 'knex';
 import { OrdersTable, ParticipantsTable, RoutesTable } from '../db';
 
 export interface GetOrdersHistoryHandlerResult {
@@ -10,7 +9,7 @@ export interface GetOrdersHistoryHandlerResult {
   driverPid: string;
   price: number;
   timeStart: string;
-  transport: {
+  route: {
     from: string;
     to: string;
   }
@@ -34,7 +33,7 @@ export const getOrdersHistoryHandler = async (fastify: FastifyInstance, currentU
     driverPid: item.driverPid,
     price: item.price,
     timeStart: item.timeStart,
-    transport: {
+    route: {
       from: item.from,
       to: item.to,
     },

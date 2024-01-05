@@ -9,7 +9,7 @@ export interface GetOrderHistoryResponseDto {
     driverPid: string;
     price: number;
     timeStart: string;
-    transport: {
+    route: {
       from: string;
       to: string;
     }
@@ -33,7 +33,7 @@ export const GetOrderHistoryResponseDtoSchema = S.object()
         .prop('timeStart', ISO())
         .description('Время начала поездки ISO')
         .required()
-        .prop('transport', S.object()
+        .prop('route', S.object()
           .prop('from', S.string()).description('Откуда').required()
           .prop('to', S.string().description('Куда'))
           .required())
