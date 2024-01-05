@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyPluginAsync, FastifyRequest } from 'fastify';
 import {
   StdAuthHeadersSchema,
-  StdErrorResponseSchema,
+  StdErrorResponseSchema, StdOnlyAuthHeadersSchema,
   StdOnlyIdResponseDto,
   StdOnlyIdResponseSchema,
 } from '@libs/http';
@@ -201,7 +201,7 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
     schema: {
       tags: ['Order'],
       summary: 'Удаление заявки о перевозке',
-      headers: StdAuthHeadersSchema,
+      headers: StdOnlyAuthHeadersSchema,
       params: GetOrderRequestUrlParamSchema,
       description: 'Удаление заявки о перевозке. Может выполнять только водитель создавший заявку',
       response: {
