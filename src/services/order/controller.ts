@@ -174,7 +174,7 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
     schema: {
       summary: 'Убрать свою запись на поездку',
       tags: ['Order'],
-      headers: StdAuthHeadersSchema,
+      headers: StdOnlyAuthHeadersSchema,
       response: {
         500: StdErrorResponseSchema,
       },
