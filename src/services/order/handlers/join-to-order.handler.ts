@@ -10,7 +10,7 @@ export const joinToOrderHandler = async (fastify: FastifyInstance, orderId: stri
     const ordersTable = trx.table<OrdersTable>(TableName.orders);
     const participantTable = trx.table<ParticipantsTable>(TableName.participants);
 
-    const orderData: { startFreeSeatCount: number, driverPid: string } | undefined = await ordersTable.select(['startFreeSeatCount', 'driverPid']).where('id', orderId).first();
+    const orderData: { startFreeSeatCount: number, driverPid: string, timeStart: string } | undefined = await ordersTable.select(['startFreeSeatCount', 'driverPid', 'timeStart']).where('id', orderId).first();
 
     if (!orderData) {
       throw new Error(`Order with id ${orderId} not found`);
@@ -18,6 +18,10 @@ export const joinToOrderHandler = async (fastify: FastifyInstance, orderId: stri
 
     if (orderData.driverPid === userId) {
       throw new Error('Driver can not be participant');
+    }
+
+    if (new Date(orderData.timeStart).getTime() < new Date().getTime()) {
+      throw new Error('Can not join to a past order');
     }
 
     const participants: ParticipantsTable[] = await participantTable.where('orderId', orderId);
