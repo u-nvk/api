@@ -1,14 +1,22 @@
 import {
   FastifyInstance, FastifyPluginAsync, FastifyRequest,
 } from 'fastify';
-import { StdAuthHeadersSchema, StdErrorResponseSchema, StdOnlyIdResponseSchema } from '@libs/http';
+import {
+  StdAuthHeadersSchema,
+  StdErrorResponseSchema,
+  StdOnlyIdResponseDto,
+  StdOnlyIdResponseSchema,
+} from '@libs/http';
 import {
   PostProfileDataRequestDto,
   PostDataRequestDtoSchema,
   GetProfileDataResponseDtoSchema,
   GetProfileDataResponseDto,
   PostCreateTransportRequestDto,
-  PostCreateTransportRequestDtoSchema, GetTransportsResponseDtoSchema, GetTransportsResponseDto,
+  PostCreateTransportRequestDtoSchema,
+  GetTransportsResponseDtoSchema,
+  GetTransportsResponseDto,
+  MarkTransportAsUnactiveUrlParamSchema, MarkTransportAsUnactiveUrlParam,
 } from './dto';
 import { setDriverPaymentsDataHandler, getProfileDataHandler, GetProfileDataHandlerReturn } from './handlers';
 import { setDriverStatusHandler } from './handlers/set-driver-status.handler';
@@ -22,6 +30,7 @@ import {
   GetDataByUseridRequestUrlParam,
   GetDataByUseridRequestUrlParamSchema,
 } from './dto/get-data-by-userid/get-data-by-userid-request.dto';
+import { markTransportAsUnactiveHandler } from './handlers/mark-transport-as-unactive.handler';
 
 export const profileController: FastifyPluginAsync = async (server: FastifyInstance) => {
   server.get<{ Reply: GetProfileDataResponseDto }>('/data/user', {
@@ -133,6 +142,34 @@ export const profileController: FastifyPluginAsync = async (server: FastifyInsta
     } catch (e) {
       request.log.error(e);
       reply.status(500).send({ description: 'Внутренняя ошибка' });
+    }
+  });
+
+  server.delete<{ Reply: StdOnlyIdResponseDto, Params: MarkTransportAsUnactiveUrlParam }>('/data/transports/:id', {
+    schema: {
+      description: 'Пометка транспорта как удаленного',
+      tags: ['Profile'],
+      params: MarkTransportAsUnactiveUrlParamSchema,
+      response: {
+        200: StdOnlyIdResponseSchema,
+      },
+      headers: StdAuthHeadersSchema,
+    },
+    preHandler: server.auth([server.verifyJwtIdentity]),
+  }, async (request, reply) => {
+    try {
+      const user = request.requestContext.get('decodedJwt');
+
+      if (!user) {
+        throw new Error('Not access token');
+      }
+
+      await markTransportAsUnactiveHandler(server, request.params.id, user.pId);
+
+      reply.status(200).send({ id: request.params.id });
+    } catch (e) {
+      request.log.error(e);
+      reply.status(500);
     }
   });
 

@@ -20,6 +20,7 @@ export const setDriverTransportHandler = async (fastify: FastifyInstance, transp
     name: transportData.name,
     plateNumber: transportData.plate,
     ownerPid: profileId,
+    isActive: true,
   };
 
   await transportTable.insert(insertData);

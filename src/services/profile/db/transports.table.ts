@@ -3,5 +3,6 @@ export interface TransportsTable {
   name: string;
   plateNumber: string;
   color: string;
+  isActive: boolean;
   ownerPid: string;
 }
