@@ -3,7 +3,7 @@ import {
 } from 'fastify';
 import {
   StdAuthHeadersSchema,
-  StdErrorResponseSchema,
+  StdErrorResponseSchema, StdOnlyAuthHeadersSchema,
   StdOnlyIdResponseDto,
   StdOnlyIdResponseSchema,
 } from '@libs/http';
@@ -153,7 +153,7 @@ export const profileController: FastifyPluginAsync = async (server: FastifyInsta
       response: {
         200: StdOnlyIdResponseSchema,
       },
-      headers: StdAuthHeadersSchema,
+      headers: StdOnlyAuthHeadersSchema,
     },
     preHandler: server.auth([server.verifyJwtIdentity]),
   }, async (request, reply) => {
