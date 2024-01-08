@@ -190,7 +190,7 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
 
       await unjoinToOrderHandler(server, request.params.orderId, userId);
 
-      reply.status(200);
+      reply.status(200).send({ orderId: request.params.orderId });
     } catch (e) {
       request.log.error(e);
       reply.status(500);
