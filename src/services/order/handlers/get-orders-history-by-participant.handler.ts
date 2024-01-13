@@ -15,7 +15,7 @@ export interface GetOrdersHistoryHandlerResult {
   }
 }
 
-export const getOrdersHistoryHandler = async (fastify: FastifyInstance, currentUserPid: string): Promise<GetOrdersHistoryHandlerResult[]> => {
+export const getOrdersHistoryByParticipantHandler = async (fastify: FastifyInstance, currentUserPid: string): Promise<GetOrdersHistoryHandlerResult[]> => {
   const result = await fastify.cdb.transaction(async (trx) => {
     const participantTable = trx.table<ParticipantsTable>(TableName.participants);
 

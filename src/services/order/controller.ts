@@ -20,9 +20,17 @@ import { getOrderHandler } from './handlers/get-order.handler';
 import { getOrdersHandler } from './handlers/get-orders.handler';
 import { GetOrdersResponseDto, GetOrdersResponseDtoSchema } from './dto/get-orders/get-orders-response.dto';
 import { joinToOrderHandler } from './handlers/join-to-order.handler';
-import { getOrdersHistoryHandler } from './handlers/get-orders-history.handler';
+import {
+  getOrdersHistoryByParticipantHandler,
+  GetOrdersHistoryHandlerResult,
+} from './handlers/get-orders-history-by-participant.handler';
 import { deleteOrderHandler } from './handlers/delete-order.handler';
 import { unjoinToOrderHandler } from './handlers/unjoin-to-order.handler';
+import {
+  GetOrderHistoryRequestQuery,
+  GetOrderHistoryRequestQuerySchema,
+} from './dto/get-order-history/get-order-history-request.dto';
+import { getOrdersHistoryByDriverHandler } from './handlers/get-orders-history-by-driver.handler';
 
 export const orderController: FastifyPluginAsync = async (server: FastifyInstance) => {
   server.get<{ Reply: GetOrderResponseDto, Params: GetOrderRequestUrlParam }>('/order/:orderId', {
@@ -71,7 +79,7 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
     }
   });
 
-  server.get<{ Reply: GetOrderHistoryResponseDto }>('/order/history', {
+  server.get<{ Reply: GetOrderHistoryResponseDto, Querystring: GetOrderHistoryRequestQuery }>('/order/history', {
     schema: {
       description: 'Получить историю поездок пользователя',
       tags: ['Order'],
@@ -80,6 +88,7 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
         200: GetOrderHistoryResponseDtoSchema,
         500: StdErrorResponseSchema,
       },
+      querystring: GetOrderHistoryRequestQuerySchema,
     },
     preHandler: server.auth([server.verifyJwtIdentity]),
   }, async (request, reply) => {
@@ -90,7 +99,13 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
         throw new Error('Not access token');
       }
 
-      const result = await getOrdersHistoryHandler(server, userId);
+      let result: GetOrdersHistoryHandlerResult[] = [];
+
+      if (request.query.role === 'driver') {
+        result = await getOrdersHistoryByDriverHandler(server, userId);
+      } else {
+        result = await getOrdersHistoryByParticipantHandler(server, userId);
+      }
 
       return {
         list: result,
