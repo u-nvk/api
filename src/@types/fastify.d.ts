@@ -11,6 +11,7 @@ declare module 'fastify' {
       VK_API_GET_PROFILE_INFO_METHOD: string;
       VK_SERVICE_TOKEN: string;
       ACCESS_SECRET: string;
+      ACCESS_TOKEN_EXPIRES: string;
       DB_CONN: string;
       HOST: string;
       PORT: number;

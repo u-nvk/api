@@ -72,6 +72,6 @@ export const insertOrUpdateUsersAndProfiles = async (fastify: FastifyInstance, v
     throw new Error('profileId does not filled');
   }
 
-  const jwt = new JwtCreator<DecodedJwtToken>({ vkId, sub: userId, pId: profileId }, fastify.envConfig.ACCESS_SECRET).withExpiresIn('90d');
+  const jwt = new JwtCreator<DecodedJwtToken>({ vkId, sub: userId, pId: profileId }, fastify.envConfig.ACCESS_SECRET).withExpiresIn(fastify.envConfig.ACCESS_TOKEN_EXPIRES);
   return jwt.create();
 };
