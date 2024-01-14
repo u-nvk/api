@@ -147,6 +147,7 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
         transportId: request.body.transportId,
         timeStart: request.body.timeStart,
         startFreeSeatCount: request.body.startFreeSeatCount,
+        comment: request.body.comment,
       });
 
       reply.status(200).send({ id: orderId });

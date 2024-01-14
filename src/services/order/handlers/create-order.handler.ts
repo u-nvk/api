@@ -18,6 +18,7 @@ export type RouteToNvk = {
 interface OrderData {
   driverProfileId: string;
   route: RouteFromNvk | RouteToNvk;
+  comment: string;
   price: number;
   transportId: string;
   timeStart: string;
@@ -56,6 +57,7 @@ export const createOrderHandler = async (fastify: FastifyInstance, data: OrderDa
       id: orderId,
       driverPid: data.driverProfileId,
       routeId,
+      comment: data.comment,
       price: data.price,
       transportId: data.transportId,
       timeStart: timeStartToIso,

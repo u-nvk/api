@@ -7,6 +7,7 @@ Authorization: {{access-token}}
     "from": "NVK",
     "to": "Библиотечная 45"
   },
+  "comment": "priver",
   "price": 100,
   "transportId": "8bd89e3c-86c6-49b7-88ec-b528ef270c05",
   "timeStart": "2023-12-18T11:28:16.669Z",

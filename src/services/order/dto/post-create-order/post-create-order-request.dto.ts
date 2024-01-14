@@ -16,6 +16,7 @@ export type RouteToNvk = {
 export interface PostCreateOrderRequestDto {
   route: RouteFromNvk | RouteToNvk;
   price: number;
+  comment: string;
   transportId: string;
   timeStart: string;
   startFreeSeatCount: number;
@@ -32,7 +33,9 @@ export const PostCreateOrderRequestDtoSchema = S.object()
       .prop('to', S.const('NVK'))
       .required(),
   ]))
-  .prop('price', S.number()).description('Стоимость проезда с человека')
+  .prop('comment', S.string()).required()
+  .prop('price', S.number())
+  .description('Стоимость проезда с человека')
   .required()
   .prop('transportId', UUID())
   .description('Айди транспорта')
