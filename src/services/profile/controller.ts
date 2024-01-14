@@ -108,7 +108,7 @@ export const profileController: FastifyPluginAsync = async (server: FastifyInsta
         await setDriverStatusHandler(server, userId.pId, request.body.isDriver);
       }
 
-      reply.status(200);
+      reply.status(200).send({});
     },
   );
 
