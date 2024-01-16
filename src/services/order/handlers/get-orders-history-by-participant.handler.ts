@@ -12,7 +12,8 @@ export interface GetOrdersHistoryHandlerResult {
   route: {
     from: string;
     to: string;
-  }
+  };
+  isDeclined: boolean;
 }
 
 export const getOrdersHistoryByParticipantHandler = async (fastify: FastifyInstance, currentUserPid: string): Promise<GetOrdersHistoryHandlerResult[]> => {
@@ -38,5 +39,6 @@ export const getOrdersHistoryByParticipantHandler = async (fastify: FastifyInsta
       from: item.from,
       to: item.to,
     },
+    isDeclined: item.isDeclined,
   }));
 };

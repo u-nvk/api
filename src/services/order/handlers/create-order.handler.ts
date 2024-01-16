@@ -62,6 +62,7 @@ export const createOrderHandler = async (fastify: FastifyInstance, data: OrderDa
       transportId: data.transportId,
       timeStart: timeStartToIso,
       startFreeSeatCount: data.startFreeSeatCount,
+      isDeclined: false,
     };
     await ordersTable.insert(insertValue);
   } catch (e) {

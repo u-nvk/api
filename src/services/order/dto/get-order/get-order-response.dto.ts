@@ -6,6 +6,7 @@ export interface GetOrderResponseDto {
   driverPid: string;
   price: number;
   comment: string;
+  isDeclined: boolean;
   route: {
     from: string;
     to: string;
@@ -46,6 +47,8 @@ export const GetOrderResponseDtoSchema = S.object()
   .prop('price', S.number())
   .required()
   .prop('comment', S.string())
+  .required()
+  .prop('isDeclined', S.boolean())
   .required()
   .prop(
     'route',

@@ -7,4 +7,5 @@ export interface OrdersTable {
   transportId: string;
   startFreeSeatCount: number;
   timeStart: string;
+  isDeclined: boolean;
 }

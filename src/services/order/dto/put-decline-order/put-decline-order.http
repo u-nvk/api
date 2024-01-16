@@ -1,0 +1,5 @@
+PUT http://{{host}}/order/api/v1/order/54655510-44ca-4b5c-8f21-cf884215ea9f/decline
+Content-Type: application/json
+Authorization: {{access-token}}
+
+{}

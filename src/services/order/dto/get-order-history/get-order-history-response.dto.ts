@@ -12,7 +12,8 @@ export interface GetOrderHistoryResponseDto {
     route: {
       from: string;
       to: string;
-    }
+    };
+    isDeclined: boolean;
   }[]
 }
 
@@ -37,6 +38,8 @@ export const GetOrderHistoryResponseDtoSchema = S.object()
           .prop('from', S.string()).description('Откуда').required()
           .prop('to', S.string().description('Куда'))
           .required())
+        .required()
+        .prop('isDeclined', S.object())
         .required(),
     ))
   .required();

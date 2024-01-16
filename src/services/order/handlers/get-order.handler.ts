@@ -11,6 +11,7 @@ interface Order {
   driverPid: string;
   price: number;
   comment: string;
+  isDeclined: boolean;
   route: {
     from: string;
     to: string;
@@ -76,6 +77,7 @@ export const getOrderHandler = async (fastify: FastifyInstance, orderId: string)
     driverPid: orderData.driverPid,
     price: orderData.price,
     comment: orderData.comment,
+    isDeclined: orderData.isDeclined,
     route: {
       from: orderData.from,
       to: orderData.to,

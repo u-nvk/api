@@ -26,6 +26,7 @@ export const getOrdersHandler = async (fastify: FastifyInstance): Promise<OrderP
       `${TableName.routes}.id as rId`,
     ])
     .where('timeStart', '>=', (new Date()).toISOString())
+    .where('isDeclined', false)
     .leftJoin(`${TableName.routes}`, `${TableName.orders}.routeId`, `${TableName.routes}.id`)
     .orderBy('timeStart', 'asc');
 

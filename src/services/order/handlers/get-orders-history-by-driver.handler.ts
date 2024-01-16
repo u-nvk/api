@@ -12,7 +12,8 @@ export interface GetOrdersHistoryHandlerResult {
   route: {
     from: string;
     to: string;
-  }
+  };
+  isDeclined: boolean;
 }
 
 export const getOrdersHistoryByDriverHandler = async (fastify: FastifyInstance, driverPid: string): Promise<GetOrdersHistoryHandlerResult[]> => {
@@ -37,5 +38,6 @@ export const getOrdersHistoryByDriverHandler = async (fastify: FastifyInstance, 
       from: item.from,
       to: item.to,
     },
+    isDeclined: item.isDeclined,
   }));
 };

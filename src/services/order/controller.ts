@@ -31,6 +31,7 @@ import {
   GetOrderHistoryRequestQuerySchema,
 } from './dto/get-order-history/get-order-history-request.dto';
 import { getOrdersHistoryByDriverHandler } from './handlers/get-orders-history-by-driver.handler';
+import { declineOrderHandler } from './handlers/decline-order.handler';
 
 export const orderController: FastifyPluginAsync = async (server: FastifyInstance) => {
   server.get<{ Reply: GetOrderResponseDto, Params: GetOrderRequestUrlParam }>('/order/:orderId', {
@@ -213,13 +214,13 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
     }
   });
 
-  server.delete<{ Params: DeleteOrderRequestUrlParam }>('/order/:orderId', {
+  server.put<{ Params: DeleteUnjoinToOrderRequestUrlParam }>('/order/:orderId/decline', {
     schema: {
       tags: ['Order'],
-      summary: 'Удаление заявки о перевозке',
+      summary: 'Отмена заявки о перевозке',
       headers: StdOnlyAuthHeadersSchema,
       params: GetOrderRequestUrlParamSchema,
-      description: 'Удаление заявки о перевозке. Может выполнять только водитель создавший заявку',
+      description: 'Отмена заявки о перевозке. Может выполнять только водитель создавший заявку',
       response: {
         500: StdErrorResponseSchema,
       },
@@ -233,9 +234,9 @@ export const orderController: FastifyPluginAsync = async (server: FastifyInstanc
         throw new Error('Not access token');
       }
 
-      const result = await deleteOrderHandler(server, request.params.orderId, userId);
+      const result = await declineOrderHandler(server, request.params.orderId, userId);
 
-      reply.status(result ? 200 : 500);
+      reply.status(200).send({ isOk: true });
     } catch (e) {
       request.log.error(e);
       reply.status(500);
