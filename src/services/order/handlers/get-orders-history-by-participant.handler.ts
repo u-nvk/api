@@ -23,7 +23,8 @@ export const getOrdersHistoryByParticipantHandler = async (fastify: FastifyInsta
     const allOrderWhereUserBe: (OrdersTable & RoutesTable & ParticipantsTable)[] = await participantTable.select('*').where('userPid', currentUserPid)
       .leftJoin(TableName.orders, 'orderId', `${TableName.orders}.id`)
       .where(`${TableName.orders}.timeStart`, '<', new Date().toISOString())
-      .leftJoin(TableName.routes, 'routeId', `${TableName.routes}.id`);
+      .leftJoin(TableName.routes, 'routeId', `${TableName.routes}.id`)
+      .orderBy('timeStart', 'asc');
 
     return allOrderWhereUserBe;
   });

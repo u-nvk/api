@@ -22,7 +22,8 @@ export const getOrdersHistoryByDriverHandler = async (fastify: FastifyInstance, 
 
     const res: (OrdersTable & RoutesTable & ParticipantsTable & { oId: string })[] = await ordersTable.select('*', `${TableName.orders}.id as oId`).where('driverPid', driverPid).where('timeStart', '<', new Date().toISOString())
       .leftJoin(TableName.routes, 'routeId', `${TableName.routes}.id`)
-      .leftJoin(TableName.participants, 'orderId', `${TableName.orders}.id`);
+      .leftJoin(TableName.participants, 'orderId', `${TableName.orders}.id`)
+      .orderBy('timeStart', 'asc');
 
     return res;
   });
