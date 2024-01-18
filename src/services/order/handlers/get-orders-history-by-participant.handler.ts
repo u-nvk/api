@@ -5,7 +5,6 @@ import { OrdersTable, ParticipantsTable, RoutesTable } from '../db';
 export interface GetOrdersHistoryHandlerResult {
   id: string;
   orderId: string;
-  userPid: string;
   driverPid: string;
   price: number;
   timeStart: string;
@@ -24,7 +23,7 @@ export const getOrdersHistoryByParticipantHandler = async (fastify: FastifyInsta
       .leftJoin(TableName.orders, 'orderId', `${TableName.orders}.id`)
       .where(`${TableName.orders}.timeStart`, '<', new Date().toISOString())
       .leftJoin(TableName.routes, 'routeId', `${TableName.routes}.id`)
-      .orderBy('timeStart', 'asc');
+      .orderBy('timeStart', 'desc');
 
     return allOrderWhereUserBe;
   });
@@ -32,7 +31,6 @@ export const getOrdersHistoryByParticipantHandler = async (fastify: FastifyInsta
   return result.map((item) => ({
     id: item.id,
     orderId: item.orderId,
-    userPid: item.userPid,
     driverPid: item.driverPid,
     price: item.price,
     timeStart: item.timeStart,

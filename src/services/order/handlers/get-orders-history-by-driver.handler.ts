@@ -5,7 +5,6 @@ import { OrdersTable, ParticipantsTable, RoutesTable } from '../db';
 export interface GetOrdersHistoryHandlerResult {
   id: string;
   orderId: string;
-  userPid: string;
   driverPid: string;
   price: number;
   timeStart: string;
@@ -20,10 +19,9 @@ export const getOrdersHistoryByDriverHandler = async (fastify: FastifyInstance, 
   const result = await fastify.cdb.transaction(async (trx) => {
     const ordersTable = trx.table<OrdersTable>(TableName.orders);
 
-    const res: (OrdersTable & RoutesTable & ParticipantsTable & { oId: string })[] = await ordersTable.select('*', `${TableName.orders}.id as oId`).where('driverPid', driverPid).where('timeStart', '<', new Date().toISOString())
+    const res: (OrdersTable & RoutesTable & { oId: string })[] = await ordersTable.select('*', `${TableName.orders}.id as oId`).where('driverPid', driverPid).where('timeStart', '<', new Date().toISOString())
       .leftJoin(TableName.routes, 'routeId', `${TableName.routes}.id`)
-      .leftJoin(TableName.participants, 'orderId', `${TableName.orders}.id`)
-      .orderBy('timeStart', 'asc');
+      .orderBy('timeStart', 'desc');
 
     return res;
   });
@@ -31,7 +29,6 @@ export const getOrdersHistoryByDriverHandler = async (fastify: FastifyInstance, 
   return result.map((item) => ({
     id: item.oId,
     orderId: item.oId,
-    userPid: item.oId,
     driverPid: item.driverPid,
     price: item.price,
     timeStart: item.timeStart,

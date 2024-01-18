@@ -5,7 +5,6 @@ export interface GetOrderHistoryResponseDto {
   list: {
     id: string;
     orderId: string;
-    userPid: string;
     driverPid: string;
     price: number;
     timeStart: string;
@@ -22,9 +21,6 @@ export const GetOrderHistoryResponseDtoSchema = S.object()
     .items(
       S.object()
         .prop('orderId', UUID()).description('Айди поездки').required()
-        .prop('userPid', UUID())
-        .description('Айди профиля пользователя, который участвовал в поездке')
-        .required()
         .prop('driverPid', UUID())
         .description('Айди профиля водителя')
         .required()
@@ -39,7 +35,7 @@ export const GetOrderHistoryResponseDtoSchema = S.object()
           .prop('to', S.string().description('Куда'))
           .required())
         .required()
-        .prop('isDeclined', S.object())
+        .prop('isDeclined', S.boolean())
         .required(),
     ))
   .required();
